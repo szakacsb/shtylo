@@ -1,25 +1,53 @@
-function (input, output, session, db.service, log.service) {
+function (input, output, session, db.service, log.service, preanalyzer, updater, saveSettings, loadSettings) {
 
   observeEvent(
-    eventExpr = input$stylo.activate,
+    eventExpr = input$wizard.run, 
     handlerExpr = {
+      if (db.service$is.connected()) {
+        preanalyzer(input, output, session, db.service)
+      } else {
+        
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$wizard.previous, 
+    handlerExpr = {
+      select <- as.integer(input$wizard.tabsetpanel)
+      
+      if(select > 1)
+        updateTabsetPanel(
+          session,
+          "wizard.tabsetpanel",
+          selected = toString(select - 1)
+        )
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$wizard.next, 
+    handlerExpr = {
+      select <- as.integer(input$wizard.tabsetpanel)
+      
+      if(select < 7)
       updateTabsetPanel(
         session,
-        "stylo.start.tabsetpanel",
-        selected = "Run Stylo"
+        "wizard.tabsetpanel",
+        selected = toString(select + 1)
       )
     }
   )
   
   observeEvent(
-    eventExpr = input$stylo.run, 
+    eventExpr = input$wizard.apply, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        tmp <- sidebar$run
-        sidebar$run <- tmp + 1
-        log.service$log(
-          "Stylo invoked with given parameters...",
-          where = "stylo"
+        updater(session, input)
+        updateTabsetPanel(
+          session,
+          "stylo.start.tabsetpanel",
+          selected = "Run Stylo"
         )
       } else {
         log.service$log(
@@ -30,14 +58,38 @@ function (input, output, session, db.service, log.service) {
     }
   )
   
-  sidebar <- reactiveValues(
-    run = 0
+  observeEvent(
+    eventExpr = input$wizard.save, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        saveSettings(filename = input$wizardFileName, input = input)
+      } else {
+        log.service$log(
+          "Please connect to a database!",
+          where = "stylo"
+        )
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$wizard.load, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        loadSettings(filename = input$wizardFileName, session = session)
+      } else {
+        log.service$log(
+          "Please connect to a database!",
+          where = "stylo"
+        )
+      }
+    }
   )
   
   observe({
     updateSelectInput(
       session, 
-      "input.select", 
+      "wizardInputSelect", 
       choices = c(
         "Plain Text" = "plain",
         "XML" = "xml",
@@ -51,7 +103,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "language.select", 
+      "wizardLanguageSelect", 
       choices = c(
         "English" = "English",
         "English w/ contractions" = "English.contr",
@@ -74,7 +126,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "features.select", 
+      "wizardFeaturesSelect", 
       choices = c(
         "Characters" = "c",
         "Words" = "w"
@@ -85,7 +137,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "statistics.select", 
+      "wizardStatisticsSelect", 
       choices = c(
         "Cluster Analysis" = "CA",
         "MDS" = "MDS",
@@ -100,7 +152,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "scatterplot.select", 
+      "wizardScatterplotSelect", 
       choices = c(
         "Labels" = "labels",
         "Points" = "points",
@@ -112,7 +164,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "pca.flavour.select", 
+      "wizardPcaFlavourSelect", 
       choices = c(
         "Classic" = "classic",
         "Loadings" = "loadings",
@@ -125,36 +177,7 @@ function (input, output, session, db.service, log.service) {
   observe({
     updateSelectInput(
       session, 
-      "distances.select", 
-      choices = c(
-        "Classic Delta" = "dist.delta",
-        "Argamon's Delta" = "dist.argamon",
-        "Eder's Delta" = "dist.eder",
-        "Eder's Simple Distance" = "dist.simple",
-        "Manhattan" = "dist.manhattan",
-        "Canberra" = "dist.canberra",
-        "Euclidean" = "dist.euclidean",
-        "Cosine" = "dist.cosine"
-      )
-    )
-  })
-  
-  observe({
-    updateSelectInput(
-      session, 
-      "sampling.select", 
-      choices = c(
-        "No Sampling" = "no.sampling",
-        "Normal Sampling" = "normal.sampling",
-        "Random Sampling" = "random.sampling"
-      )
-    )
-  })
-  
-  observe({
-    updateSelectInput(
-      session, 
-      "output.plot.colour.choices", 
+      "wizardOutputPlotColourChoices", 
       choices = c(
         "Colours" = "colors",
         "Greyscale" = "greyscale",
@@ -162,8 +185,4 @@ function (input, output, session, db.service, log.service) {
       )
     )
   })
-  
-  export <- list(sidebar)
-  names(export) <- c("params")
-  export
 }

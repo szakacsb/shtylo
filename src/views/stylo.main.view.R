@@ -1,4 +1,5 @@
 # initialize the main view of the stylometry page
+
 mainPanel(
   width = 12,
   tags$head(

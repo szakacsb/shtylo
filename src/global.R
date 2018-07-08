@@ -4,6 +4,7 @@ library(mongolite)
 library(shiny)
 library(shinyBS)
 library(properties)
+library(readr)
 
 shtylo.properties <- read.properties("./.shiny_app.conf")
 writeLines("The following Shtylo properties were loaded:")
