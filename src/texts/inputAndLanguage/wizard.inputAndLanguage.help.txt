@@ -1,0 +1,1 @@
+This panel is about the basic parameters of the corpus. The settings here are purely technical, they are neccesary for the analyzer tool to perform without technical errors. Otherwise it does not affect the results of the analysis in any meaningful way.

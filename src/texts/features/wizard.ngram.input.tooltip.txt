@@ -1,0 +1,1 @@
+The number of features following each other that will be used as the basic element for the analysis. The number should be in the single digits most of the time. The bigger it is, the rarer the individual elements get.

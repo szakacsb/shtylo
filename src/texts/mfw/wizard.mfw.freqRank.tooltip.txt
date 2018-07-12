@@ -1,0 +1,1 @@
+Setting this to number X means the first X-1 most frequent words will not be used through the analysis.

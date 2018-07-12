@@ -1,0 +1,1 @@
+This panel is about the basic elements that will be used through the analysis. You can set the type of the element, and the number of them to be used as a single element. For examlple: word 2 means the software will use every two words following each other as the basic elements of the analysis
