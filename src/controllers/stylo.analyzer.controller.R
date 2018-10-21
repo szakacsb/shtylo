@@ -166,7 +166,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
                   }
                 }
               }
-              if((sumOfPercents / count) < (sumOfEPercents / Ecount)){
+              if(Ecount == 0 || (count > 0 && (sumOfPercents / count) < (sumOfEPercents / Ecount))){
                 sumOfWrongGuesses = sumOfWrongGuesses - 1;
               } else {
                 sumOfWrongGuesses = sumOfWrongGuesses + 1;
@@ -176,8 +176,8 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           }
           
           checkbounds <- function(v){
-            upperBounds <- c(1, 6, 100, 100, 8)
-            lowerBounds <- c(0, 2, 5, 0, 1)
+            upperBounds <- c(1, 6, 100, 90, 8)
+            lowerBounds <- c(0, 2, 20, 0, 1)
             for(i in 1:5){
               if(v[[i]] < lowerBounds[[i]] || v[[i]] > upperBounds[[i]])
                 return(FALSE)
@@ -192,18 +192,22 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           index <- 1
           candidates <- c()
           results <- c()
-          while(index < 11){
+          while(index < input$numberOfPreCycles + 1){
             candidates[[index]] <- c(
               ifelse(runif(1) > 0.5, TRUE, FALSE),
               round(runif(1)*4) + 2,
-              round(runif(1)*19)*5 + 5,
-              round(runif(1)*20)*5,
-              round(runif(1)*7) + 1
+              round(runif(1)*16)*5 + 20,
+              round(runif(1)*18)*5,
+              round(runif(1)*6) + 1
             )
             if(checkbounds(candidates[[index]])){
-              parsed <- parseCorpus(typeSelect(candidates[[index]][[1]]), candidates[[index]][[2]])
-              result <- invokeStylo(candidates[[index]])
-              results[[index]] <- score(result$distance.table)
+              sc <- 100000
+              try({
+                parsed <- parseCorpus(typeSelect(candidates[[index]][[1]]), candidates[[index]][[2]])
+                result <- invokeStylo(candidates[[index]])
+                sc <- score(result$distance.table)
+              })
+              results[[index]] <- sc
               lut[[index]] <- candidates[[index]]
               res[[index]] <- results[[index]]
               index = index + 1
@@ -213,7 +217,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           e <- results[[match(min(results), results)]]
           changeVector <- c(1, 1, 5, 5, 1)
           
-          kmax <- 40
+          kmax <- input$numberOfCycles
           k <- kmax
           while(k > 0){
             changeIndex <- round(runif(1)*4)+1
@@ -227,11 +231,14 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
                 }
               }
               if(is.null(enew)){
-                if(changeIndex < 3){
-                  parsed <- parseCorpus(typeSelect(nextVector[[1]]), nextVector[[2]])
-                }
-                result <- invokeStylo(nextVector)
-                enew <- score(result$distance.table)
+                enew <- 100000
+                try({
+                  if(changeIndex < 3){
+                    parsed <- parseCorpus(typeSelect(nextVector[[1]]), nextVector[[2]])
+                  }
+                  result <- invokeStylo(nextVector)
+                  enew <- score(result$distance.table)
+                })
                 lut[[index]] <- nextVector
                 res[[index]] <- enew
                 index = index + 1

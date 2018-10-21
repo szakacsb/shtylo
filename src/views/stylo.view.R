@@ -36,6 +36,24 @@ div(
           actionButton(
             "analyzer.run",
             label = "Run Analyzer"
+          ),
+          numericInput(
+            "numberOfPreCycles", 
+            "Number of Pre-Cycles", 
+            value = 10, 
+            min = 1, 
+            max = NA, 
+            step = 1, 
+            width = NULL
+          ),
+          numericInput(
+            "numberOfCycles", 
+            "Number of Cycles", 
+            value = 40, 
+            min = 1, 
+            max = NA, 
+            step = 1, 
+            width = NULL
           )
         )
       )

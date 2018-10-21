@@ -20,16 +20,13 @@ function(input, output, session, db.service) {
   meanOfFreq <- mean(frequencyList)
   firstCap <- 0.01
   secondCap <- 0.05
-  thirdCap <- 0.1
   
-  feat_ <- "c"
-  val_ <- 3
+  feat_ <- "w"
+  val_ <- 2
   if(meanOfFreq < firstCap){
-    feat_ <- "w"
+    feat_ <- "c"
+    val_ <- 3
   } else if(meanOfFreq < secondCap){
-    feat_ <- "w"
-    val_ <- 2
-  } else if(meanOfFreq < thirdCap){
     feat_ <- "w"
     val_ <- 1
   }
