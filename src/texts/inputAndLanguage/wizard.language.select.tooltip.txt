@@ -1,0 +1,1 @@
+The language of the texts. If the option is missing, select English (altough some functions might not work, such as Remove Pronouns).

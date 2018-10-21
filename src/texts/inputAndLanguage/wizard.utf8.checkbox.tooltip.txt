@@ -1,0 +1,1 @@
+Check it if your text is encoded in UTF-8 format. If the most frequent words contain strange characters, you might want to check/uncheck it.

@@ -1,0 +1,1 @@
+Check if letter-case is an important part of the texts. Most of the time, it is not.

@@ -1,0 +1,1 @@
+The format of your text. Usually plain, unless it contains html-tags or other elements that hold meta-information, then the option corresponding to the format.
