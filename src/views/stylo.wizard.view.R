@@ -15,6 +15,36 @@ wizard.mfw.increment.tooltip <- read_file("./texts/mfw/wizard.mfw.increment.tool
 wizard.mfw.freqRank.tooltip <- read_file("./texts/mfw/wizard.mfw.freqRank.tooltip.txt")
 wizard.mfw.help <- read_file("./texts/mfw/wizard.mfw.help.txt")
 
+wizard.culling.minimum.tooltip <- read_file("./texts/culling/wizard.culling.minimum.tooltip.txt")
+wizard.culling.maximum.tooltip <- read_file("./texts/culling/wizard.culling.maximum.tooltip.txt")
+wizard.culling.increment.tooltip <- read_file("./texts/culling/wizard.culling.increment.tooltip.txt")
+wizard.culling.listCutoff.tooltip <- read_file("./texts/culling/wizard.culling.listCutoff.tooltip.txt")
+wizard.culling.pronouns.tooltip <- read_file("./texts/culling/wizard.culling.pronouns.tooltip.txt")
+wizard.culling.help <- read_file("./texts/culling/wizard.culling.help.txt")
+
+wizard.statistics.select.tooltip <- read_file("./texts/statistics/wizard.statistics.select.tooltip.txt")
+wizard.statistics.consensus.tooltip <- read_file("./texts/statistics/wizard.statistics.consensus.tooltip.txt")
+wizard.statistics.scatterplot.tooltip <- read_file("./texts/statistics/wizard.statistics.scatterplot.tooltip.txt")
+wizard.statistics.scatterplot.margin.tooltip <- read_file("./texts/statistics/wizard.statistics.scatterplot.margin.tooltip.txt")
+wizard.statistics.scatterplot.offset.tooltip <- read_file("./texts/statistics/wizard.statistics.scatterplot.offset.tooltip.txt")
+wizard.statistics.pcaFlavour.tooltip <- read_file("./texts/statistics/wizard.statistics.pcaFlavour.tooltip.txt")
+wizard.statistics.clustering.horisontal.tooltip <- read_file("./texts/statistics/wizard.statistics.clustering.horisontal.tooltip.txt")
+wizard.statistics.distance.tooltip <- read_file("./texts/statistics/wizard.statistics.distance.tooltip.txt")
+wizard.statistics.help <- read_file("./texts/statistics/wizard.statistics.help.txt")
+
+wizard.sampling.select.tooltip <- read_file("./texts/sampling/wizard.sampling.select.tooltip.txt")
+wizard.sampling.input.tooltip <- read_file("./texts/sampling/wizard.sampling.input.tooltip.txt")
+wizard.sampling.help <- read_file("./texts/sampling/wizard.sampling.help.txt")
+
+wizard.output.plot.height.tooltip <- read_file("./texts/output/wizard.output.plot.height.tooltip.txt")
+wizard.output.plot.width.tooltip <- read_file("./texts/output/wizard.output.plot.width.tooltip.txt")
+wizard.output.plot.font.tooltip <- read_file("./texts/output/wizard.output.plot.font.tooltip.txt")
+wizard.output.plot.line.tooltip <- read_file("./texts/output/wizard.output.plot.line.tooltip.txt")
+wizard.output.plot.colour.tooltip <- read_file("./texts/output/wizard.output.plot.colour.tooltip.txt")
+wizard.output.plot.default.tooltip <- read_file("./texts/output/wizard.output.plot.default.tooltip.txt")
+wizard.output.plot.titles.tooltip <- read_file("./texts/output/wizard.output.plot.titles.tooltip.txt")
+wizard.output.help <- read_file("./texts/output/wizard.output.help.txt")
+
 wizard.inputAndLanguage.panel <- tabPanel(
   "Input & language",
   value = "1",
@@ -244,6 +274,14 @@ wizard.culling.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "wizardCullingMinimumInput",
+        "Minimum",
+        wizard.culling.minimum.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       numericInput(
         "wizardCullingMaximumInput", 
         "Maximum", 
@@ -252,6 +290,14 @@ wizard.culling.panel <- tabPanel(
         max = NA, 
         step = 1, 
         width = NULL
+      ),
+      bsPopover(
+        "wizardCullingMaximumInput",
+        "Maximum",
+        wizard.culling.maximum.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
       ),
       numericInput(
         "WizadrCullingIncrementInput", 
@@ -262,6 +308,14 @@ wizard.culling.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "WizadrCullingIncrementInput",
+        "Increment",
+        wizard.culling.increment.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       numericInput(
         "wizardCullingListCutoffInput", 
         "List cutoff", 
@@ -271,17 +325,33 @@ wizard.culling.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "wizardCullingListCutoffInput",
+        "List cutoff",
+        wizard.culling.listCutoff.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       checkboxInput(
         "wizardCullingPronounCheckbox", 
         "Delete pronouns", 
         value = FALSE, 
         width = NULL
+      ),
+      bsPopover(
+        "wizardCullingPronounCheckbox",
+        "Delete pronouns",
+        wizard.culling.pronouns.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
       )
     ),
     column(
       6, # width out of 12
       div(
-        p("help goes here")
+        wizard.culling.help
       )
     )
   )
@@ -301,6 +371,14 @@ wizard.statistics.panel <- tabPanel(
         choices = NULL, 
         width = "100%"
       ),
+      bsPopover(
+        "wizardStatisticsSelect",
+        "Statistics",
+        wizard.statistics.select.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       conditionalPanel(
         condition = "input['wizardStatisticsSelect'] === 'BCT'",
         numericInput(
@@ -312,8 +390,17 @@ wizard.statistics.panel <- tabPanel(
           step = 0.1, 
           width = NULL
         ),
+        bsPopover(
+          "wizardStatisticsConsensusInput",
+          "Consensus Strength",
+          wizard.statistics.consensus.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
+        ),
         HTML('<hr style="color: grey;">')
       ),
+      
       conditionalPanel(
         condition = "['MDS', 'PCV', 'PCR'].indexOf(input['wizardStatisticsSelect']) !== -1",
         HTML('<hr style="color: grey;">'),
@@ -325,6 +412,14 @@ wizard.statistics.panel <- tabPanel(
           choices = NULL, 
           width = "100%"
         ),
+        bsPopover(
+          "wizardScatterplotSelect",
+          "Texts on plot",
+          wizard.statistics.scatterplot.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
+        ),
         numericInput(
           "wizardScatterplotMarginInput", 
           "Margins", 
@@ -334,6 +429,14 @@ wizard.statistics.panel <- tabPanel(
           step = 1, 
           width = NULL
         ),
+        bsPopover(
+          "wizardScatterplotMarginInput",
+          "Margins",
+          wizard.statistics.scatterplot.margin.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
+        ),
         numericInput(
           "wizardScatterplotOffsetInput", 
           "Label offset", 
@@ -342,6 +445,14 @@ wizard.statistics.panel <- tabPanel(
           max = NA, 
           step = 1, 
           width = NULL
+        ),
+        bsPopover(
+          "wizardScatterplotOffsetInput",
+          "Label offset",
+          wizard.statistics.scatterplot.offset.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
         ),
         HTML('<hr style="color: grey;">')
       ),
@@ -356,6 +467,14 @@ wizard.statistics.panel <- tabPanel(
           choices = NULL, 
           width = "100%"
         ),
+        bsPopover(
+          "wizardPcaFlavourSelect",
+          "PCA flavour",
+          wizard.statistics.pcaFlavour.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
+        ),
         HTML('<hr style="color: grey;">')
       ),
       conditionalPanel(
@@ -367,6 +486,14 @@ wizard.statistics.panel <- tabPanel(
           value = TRUE, 
           width = NULL
         ),
+        bsPopover(
+          "wizardClusteringHorizontalCheckbox",
+          "Horizontal CA tree",
+          wizard.statistics.clustering.horisontal.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
+        ),
         HTML('<hr style="color: grey;">')
       ),
       selectInput(
@@ -376,12 +503,20 @@ wizard.statistics.panel <- tabPanel(
         multiple = FALSE, 
         choices = NULL, 
         width = "100%"
+      ),
+      bsPopover(
+        "wizardDistancesSelect",
+        "Distances",
+        wizard.statistics.distance.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
       )
     ),
     column(
       6, # width out of 12
       div(
-        p("help goes here")
+        wizard.statistics.help
       )
     )
   )
@@ -401,6 +536,14 @@ wizard.sampling.panel <- tabPanel(
         choices = NULL, 
         width = "100%"
       ),
+      bsPopover(
+        "wizardSamplingSelect",
+        "Sampling Method",
+        wizard.sampling.select.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       conditionalPanel(
         condition = "input['wizardSamplingSelect'] === 'normal.sampling'",
         numericInput(
@@ -411,6 +554,13 @@ wizard.sampling.panel <- tabPanel(
           max = NA, 
           step = 1, 
           width = NULL
+        ),bsPopover(
+          "wizardSamplingInput",
+          "Sample Size",
+          wizard.sampling.input.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
         )
       ),
       conditionalPanel(
@@ -423,13 +573,21 @@ wizard.sampling.panel <- tabPanel(
           max = NA, 
           step = 1, 
           width = NULL
+        ),
+        bsPopover(
+          "wizardSamplingInput",
+          "Random Samples",
+          wizard.sampling.input.tooltip,
+          placement = "right",
+          trigger = "hover",
+          options=list(container="body")
         )
       )
     ),
     column(
       6, # width out of 12
       div(
-        p("help goes here")
+        wizard.sampling.help
       )
     )
   )
@@ -450,6 +608,14 @@ wizard.output.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "wizardOutputPlotHeightInput",
+        "Plot Height",
+        wizard.output.plot.height.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       numericInput(
         "wizardOutputPlotWidthInput", 
         "Plot Width", 
@@ -458,6 +624,14 @@ wizard.output.panel <- tabPanel(
         max = NA, 
         step = 1, 
         width = NULL
+      ),
+      bsPopover(
+        "wizardOutputPlotWidthInput",
+        "Plot Width",
+        wizard.output.plot.width.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
       ),
       numericInput(
         "wizardOutputPlotFontInput", 
@@ -468,6 +642,14 @@ wizard.output.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "wizardOutputPlotFontInput",
+        "Font Size",
+        wizard.output.plot.font.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       numericInput(
         "wizardOutputPlotLineInput", 
         "Line Width", 
@@ -477,6 +659,14 @@ wizard.output.panel <- tabPanel(
         step = 1, 
         width = NULL
       ),
+      bsPopover(
+        "wizardOutputPlotLineInput",
+        "Line Width",
+        wizard.output.plot.line.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       selectInput(
         "wizardOutputPlotColourChoices", 
         "Plot Colours", 
@@ -485,23 +675,47 @@ wizard.output.panel <- tabPanel(
         multiple = FALSE, 
         width = NULL
       ),
+      bsPopover(
+        "wizardOutputPlotColourChoices",
+        "Plot Colours",
+        wizard.output.plot.colour.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       checkboxInput(
         "wizardOutputPlotDefaultCheckbox", 
         "Set defaults", 
         value = FALSE, 
         width = NULL
       ),
+      bsPopover(
+        "wizardOutputPlotDefaultCheckbox",
+        "Set defaults",
+        wizard.output.plot.default.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
+      ),
       checkboxInput(
         "wizardOutputPlotTitlesCheckbox", 
         "Display titles", 
         value = FALSE, 
         width = NULL
+      ),
+      bsPopover(
+        "wizardOutputPlotTitlesCheckbox",
+        "Display titles",
+        wizard.output.plot.titles.tooltip,
+        placement = "right",
+        trigger = "hover",
+        options=list(container="body")
       )
     ),
     column(
       6, # width out of 12
       div(
-        p("help goes here")
+        wizard.output.help
       )
     )
   )
