@@ -1,8 +1,8 @@
 function (input, output, session, log.service) {
+  usr <- 'test'#(parseQueryString(session$clientData$url_search))$username
   
   mongodb <- reactiveValues(
-    conn = NULL,
-    usr = (parseQueryString(session$clientData$url_search))$username
+    conn = NULL
   )
   
   set.workspace <- function (db, coll) {
@@ -12,21 +12,21 @@ function (input, output, session, log.service) {
   }
   
   status.string <- eventReactive(input$db.connect, {
-    paste("Connected to", paste(mongodb$usr, input$db.collection, sep = ":"), sep = " ")
+    paste("Connected to", paste(usr, input$db.collection, sep = ":"), sep = " ")
   })
   
   observeEvent(input$db.connect, {
     tryCatch({
       mongodb$conn <- mongolite::mongo(
         collection = input$db.collection,
-        db = mongodb$usr,
+        db = usr,
         url = db.url,
         verbose = TRUE
       )
       log.service$log(
         paste(
           "Connection successful: ",
-          mongodb$usr,
+          usr,
           ":",
           input$db.collection,
           sep = ""
@@ -34,13 +34,13 @@ function (input, output, session, log.service) {
         where = "db"
       )
       log.service$default.label$error <- FALSE
-      set.workspace(mongodb$usr, input$db.collection)
+      set.workspace(usr, input$db.collection)
     },
     error = function(err) {
       log.service$log(
         paste(
           "Connection failed! invalid connection parameters: database='",
-          mongodb$usr,
+          usr,
           "', collection='",
           input$db.collection,
           "'!",
@@ -74,7 +74,7 @@ function (input, output, session, log.service) {
       log.service$log(
         paste(
           "Corpus insertion successful: ",
-          mongodb$usr,
+          usr,
           ":",
           input$db.collection,
           sep = ""
@@ -86,7 +86,7 @@ function (input, output, session, log.service) {
       log.service$log(
         paste(
           "Corpus insertion failed at: ",
-          mongodb$usr,
+          usr,
           ":",
           input$db.collection,
           ", error: ",
@@ -165,6 +165,7 @@ function (input, output, session, log.service) {
       object = corpus,
       nm = collection$title
     )
+    corpus$config.conf <- NULL
     corpus
   }
   
