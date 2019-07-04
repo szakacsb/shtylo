@@ -1,5 +1,5 @@
 function (input, output, session, log.service) {
-  usr <- 'test'#(parseQueryString(session$clientData$url_search))$username
+  usr <- (parseQueryString(session$clientData$url_search))$username
   
   mongodb <- reactiveValues(
     conn = NULL
