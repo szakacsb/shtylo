@@ -1,7 +1,8 @@
 function (input, output, session, log.service) {
   
   mongodb <- reactiveValues(
-    conn = NULL
+    conn = NULL,
+    usr = (parseQueryString(session$clientData$url_search))$username
   )
   
   set.workspace <- function (db, coll) {
@@ -11,21 +12,21 @@ function (input, output, session, log.service) {
   }
   
   status.string <- eventReactive(input$db.connect, {
-    paste("Connected to", paste(input$db.database, input$db.collection, sep = ":"), sep = " ")
+    paste("Connected to", paste(mongodb$usr, input$db.collection, sep = ":"), sep = " ")
   })
   
   observeEvent(input$db.connect, {
     tryCatch({
       mongodb$conn <- mongolite::mongo(
         collection = input$db.collection,
-        db = input$db.database,
+        db = mongodb$usr,
         url = db.url,
         verbose = TRUE
       )
       log.service$log(
         paste(
           "Connection successful: ",
-          input$db.database,
+          mongodb$usr,
           ":",
           input$db.collection,
           sep = ""
@@ -33,13 +34,13 @@ function (input, output, session, log.service) {
         where = "db"
       )
       log.service$default.label$error <- FALSE
-      set.workspace(input$db.database, input$db.collection)
+      set.workspace(mongodb$usr, input$db.collection)
     },
     error = function(err) {
       log.service$log(
         paste(
           "Connection failed! invalid connection parameters: database='",
-          input$db.database,
+          mongodb$usr,
           "', collection='",
           input$db.collection,
           "'!",
@@ -73,7 +74,7 @@ function (input, output, session, log.service) {
       log.service$log(
         paste(
           "Corpus insertion successful: ",
-          input$db.database,
+          mongodb$usr,
           ":",
           input$db.collection,
           sep = ""
@@ -85,7 +86,7 @@ function (input, output, session, log.service) {
       log.service$log(
         paste(
           "Corpus insertion failed at: ",
-          input$db.database,
+          mongodb$usr,
           ":",
           input$db.collection,
           ", error: ",
@@ -147,6 +148,15 @@ function (input, output, session, log.service) {
     )
   })
   
+  load.collections <- function () {
+    base <- mongolite::mongo(
+      url = db.url,
+      verbose = TRUE
+    )
+    result <- base$run('{"listCollections":1}')
+    result <- as.list(result$name)
+    result
+  }
   
   load.corpus <- function () {
     collection <- mongodb$conn$find()
@@ -158,6 +168,45 @@ function (input, output, session, log.service) {
     corpus
   }
   
+  load.save <- function () {
+    collection <- mongodb$conn$find('{"title":"config.conf"}')
+    saves <- as.list(collection$content)
+    corpus <- setNames(
+      object = saves,
+      nm = collection$title
+    )
+    return(corpus$config.conf)
+  }
+  
+  upload.save <- function (save) {
+    if (is.null(save) || is.null(mongodb$conn)) {
+      log.service$log("Please connect to a database and select some files for upload!", where = "db")
+      return()
+    }
+    tryCatch({
+      texts <- NULL
+      content <- save
+      texts$content <- content
+      texts$title <- "config.conf"
+      texts$datapath <- NULL
+      mongodb$conn$insert(texts)
+      log.service$log(
+        paste(
+          "Save of settings successful"
+        ),
+        where = "db"
+      )
+    },
+    error = function(err) {
+      log.service$log(
+        paste(
+          "Save of settings failed"
+        ),
+        where = "db"
+      )
+    })
+  }
+  
   is.connected <- function () {
     ifelse(
       test = is.null(mongodb$conn),
@@ -166,7 +215,17 @@ function (input, output, session, log.service) {
     )
   }
   
-  export <- list(load.corpus, is.connected)
-  names(export) <- c("load.corpus", "is.connected")
+  observe({
+    updateSelectInput(
+      session,
+      "db.collections",
+      choices = c(
+        load.collections()
+      )
+    )
+  })
+  
+  export <- list(load.corpus, is.connected, load.save, upload.save)
+  names(export) <- c("load.corpus", "is.connected", "load.save", "upload.save")
   export
 }

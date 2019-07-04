@@ -1,6 +1,6 @@
-function(filename, session){
+function(db.service, session){
   
-  load(paste(filename, "asr", sep = "."))
+  saveVector <- db.service$load.save()
   
   updateSelectInput(
     session,

@@ -753,10 +753,14 @@ div(
     ),
     column(
       6,
-      textInput(
-        "wizardFileName",
-        NULL
-      ),
+      # selectInput(
+      #   "wizardFileName", 
+      #   "Saved Settings", 
+      #   selected = NULL, 
+      #   multiple = FALSE, 
+      #   choices = NULL, 
+      #   width = "100%"
+      # ),
       actionButton(
         "wizard.save",
         label = "Save Settings"

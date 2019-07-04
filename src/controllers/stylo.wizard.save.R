@@ -1,4 +1,4 @@
-function(filename, input){
+function(db.service, input){
   
   saveVector <- c(
     input$wizardInputSelect,
@@ -41,5 +41,5 @@ function(filename, input){
     input$wizardOutputPlotTitlesCheckbox
   )
   
-  save(saveVector, file = paste(filename, "asr", sep = "."))
+  isolate(db.service$upload.save(saveVector))
 }

@@ -62,7 +62,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     eventExpr = input$wizard.save, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        saveSettings(filename = input$wizardFileName, input = input)
+        saveSettings(db.service, input)
       } else {
         log.service$log(
           "Please connect to a database!",
@@ -76,7 +76,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     eventExpr = input$wizard.load, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        loadSettings(filename = input$wizardFileName, session = session)
+        loadSettings(db.service, session)
       } else {
         log.service$log(
           "Please connect to a database!",
@@ -182,6 +182,16 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
         "Colours" = "colors",
         "Greyscale" = "greyscale",
         "Black" = "black"
+      )
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      session, 
+      "wizardFileName", 
+      choices = c(
+        "config1" = "config1.conf"
       )
     )
   })

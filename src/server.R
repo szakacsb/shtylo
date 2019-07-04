@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
   log.service <- log.controller(input, output, session)
   #initialize database
   db.service <- db.controller(input, output, session, log.service)
-
+  
   # initialize the sidebar
   stylo.params.service <- stylo.sidebar.controller(
     input, 
@@ -57,5 +57,4 @@ shinyServer(function(input, output, session) {
     log.service, 
     stylo.params.service
   )
-  
 })

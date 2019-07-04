@@ -30,8 +30,17 @@ db.main.view <- mainPanel(
 db.config.view <- sidebarPanel(
   width = 12,
   wellPanel(
-    textInput("db.database", "Database Name", value = "", width = "100%", placeholder = "Your database..."),
+    #textInput("db.user", "Username", value = "", width = "100%", placeholder = "Your username..."),
+    #passwordInput("db.password", "Password", value = "", width = "100%", placeholder = "Your password..."),
     textInput("db.collection", "Collection (Corpus) Name", value = "", width = "100%", placeholder = "Your corpus..."),
+    selectInput(
+      "db.collections",
+      "Collection",
+      selected = NULL,
+      multiple = FALSE,
+      choices = NULL,
+      width = "100%"
+    ),
     actionButton("db.connect", "Connect", icon = icon(name = "plug", lib = "font-awesome")),
     conditionalPanel(
       condition = "output['db.status'] !== 'Not Connected'",
