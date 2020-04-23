@@ -13,7 +13,7 @@ RUN R -e "install.packages('readr')"
 RUN apt-get install xdg-utils --fix-missing -y
 RUN mkdir wd
 RUN git clone https://github.com/szakacsb/shtylo.git
-RUN apt-get install -y nano
+#RUN apt-get install -y nano
 COPY .shiny_app.conf shtylo/src/.shiny_app.conf
 #RUN apt-get install -y gnupg
 #RUN apt-get install -y apt-transport-https ca-certificates
