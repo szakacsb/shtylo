@@ -1,0 +1,1 @@
+The type of markers on the plot.
