@@ -1,0 +1,1 @@
+Checking this enables deleting all pronouns from the features. Only works if the language of the text is set correctly, and only works with certain languages (works with English and Hungarian).
