@@ -1,0 +1,1 @@
+A percentage-representing ratio (0.5 = 50%), required percentage in cluster analysises for the result to get into the Consesnus Tree. Only affects Consensus Tree analysis.
