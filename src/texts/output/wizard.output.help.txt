@@ -1,0 +1,1 @@
+These are cosmetic settings for the visualisation of the analysis, size of graph, font and line size, colour settings, titles.
