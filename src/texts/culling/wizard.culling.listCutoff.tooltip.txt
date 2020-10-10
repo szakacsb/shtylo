@@ -1,0 +1,1 @@
+Specifies the maximum number of features to be used in the analysis. Can be helpful for large corpora, can significantly reduce running time.
