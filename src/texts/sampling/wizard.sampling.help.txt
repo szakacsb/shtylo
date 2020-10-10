@@ -1,0 +1,1 @@
+Sampling is about the method of taking samples from the text. It is mostly important for texts of different length. Normal sampling means taking equally-sized consecutive parts of the text, while random sampling selects random words from the whole text.
