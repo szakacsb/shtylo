@@ -1,1 +1,1 @@
-The type of sampling used.
+The size of samples used if sampling is enabled.
