@@ -1,1 +1,1 @@
-Enabling uses the default settings.
+If enabled uses the default settings.
