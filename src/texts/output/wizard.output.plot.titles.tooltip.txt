@@ -1,1 +1,1 @@
-Enabling it displays the titles of the texts.
+Enabling it displays a title on the output diagram.
