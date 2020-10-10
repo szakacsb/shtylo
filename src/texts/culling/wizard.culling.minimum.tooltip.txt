@@ -1,0 +1,1 @@
+The minimum amount of culling used.
