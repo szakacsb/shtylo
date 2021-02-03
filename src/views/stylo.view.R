@@ -2,6 +2,8 @@
 stylo.sidebar.view <- dget("./views/stylo.sidebar.view.R")
 stylo.main.view <- dget("./views/stylo.main.view.R")
 wizard.panel <- dget("./views/stylo.wizard.view.R")
+analyzer.sidebar.panel <- dget("./views/analyzer.sidebar.view.R")
+analyzer.main.view <- dget("./views/analyzer.main.view.R")
 
 wizard.text <- read_file("./texts/wizard.help.txt")
 runstylo.text <- read_file("./texts/runstylo.help.txt")
@@ -16,45 +18,15 @@ div(
       div(
         div(
           h5("Wizard"),
-          p(wizard.text),
-          actionButton(
-            "wizard.run",
-            label = "Run Wizard"
-          )
+          p(wizard.text)
         ),
         div(
-          h5("Run stylo"),
-          p(runstylo.text),
-          actionButton(
-            "stylo.activate",
-            label = "Go to stylo"
-          )
+          h5("Stylo"),
+          p(runstylo.text)
         ),
         div(
           h5("Analyzer"),
-          p(analyzer.text),
-          actionButton(
-            "analyzer.run",
-            label = "Run Analyzer"
-          ),
-          numericInput(
-            "numberOfPreCycles", 
-            "Number of Pre-Cycles", 
-            value = 10, 
-            min = 1, 
-            max = NA, 
-            step = 1, 
-            width = NULL
-          ),
-          numericInput(
-            "numberOfCycles", 
-            "Number of Cycles", 
-            value = 40, 
-            min = 1, 
-            max = NA, 
-            step = 1, 
-            width = NULL
-          )
+          p(analyzer.text)
         )
       )
     ),
@@ -63,7 +35,7 @@ div(
       wizard.panel
     ),
     tabPanel(
-      "Run Stylo",
+      "Stylo",
       fluidRow(
         column(
           4, # width out of 12
@@ -76,7 +48,17 @@ div(
       )
     ),
     tabPanel(
-      "Analyzer"
+      "Analyzer",
+      fluidRow(
+        column(
+          4, # width out of 12
+          analyzer.sidebar.panel
+        ),
+        column(
+          8, # width out of 12
+          analyzer.main.view
+        )
+      )
     )
   )
 )

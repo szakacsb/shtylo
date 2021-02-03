@@ -1,5 +1,109 @@
-function (input, output, session, db.service, log.service) {
+function (input, output, session, db.service, log.service, saveSettings, loadSettings) {
 
+  observeEvent(
+    eventExpr = input$stylo.save, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        saveSettings(db.service, input)
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$stylo.load, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        loadSettings(db.service, session, "stylo")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$stylo.load.analyzer, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        loadSettings(db.service, session, "analyzer")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$stylo.load.wizard, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        loadSettings(db.service, session, "wizard")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$stylo.load.text, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        write_file(serialize(fromJSON(input$stylo.load.textbox), NULL), "stylo.conf")
+        loadSettings(db.service, session, "stylo")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$stylo.export.text, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        saveSettings(db.service, input)
+        y <- read_file_raw("stylo.conf")
+        conffile <- unserialize(connection = y)
+        updateTextAreaInput(
+          session,
+          "stylo.load.textbox",
+          value = toJSON(conffile)
+        )
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
   observeEvent(
     eventExpr = input$stylo.activate,
     handlerExpr = {

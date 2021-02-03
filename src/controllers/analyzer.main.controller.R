@@ -1,4 +1,4 @@
-function (input, output, session, db.service, log.service, preanalyzer, updater) {
+function (input, output, session, db.service, log.service, stylo.analyzer.params.service) {
   
   observeEvent(
     
@@ -12,30 +12,19 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
         style = "notification",
         expr = {
           
-          incProgress(
-            amount = 0.1,
-            detail = "Invoking wizard"
-          )
-          
-          preanalyzer(input, output, session, db.service)
-
-          updater(session, input)
-          
-          corpus <- isolate(db.service$load.corpus())
+          corpus <- isolate(db.service$load.collection())
           
           parseCorpus <- function(feature, ngram) {
             parsedCorpus <- parse.corpus(
               corpus, 
               encoding = ifelse(
-                input$wizardUtf8Checkbox,
+                input$analyzerUtf8Checkbox,
                 "UTF-8",
                 "native.enc"
               ),
-              language = input$wizardLanguageSelect,
+              corpus.lang = input$analyzerLanguageSelect,
               features = feature,
               ngram.size = ngram
-              #sampling = input$wizardSamplingSelect,
-              #sample.size = input$wizardSamplingInput
             )
             return(parsedCorpus)
           }
@@ -73,7 +62,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           #vector: ngramtype(true/false), ngramSize(1-7), mfwPercent(0-100), cullingPercent(0-100), distanceMeasurement(1-8)
           invokeStylo <- function(optionVector) {
             incProgress(
-              amount = 0.005,
+              amount = 0.01,
               detail = "Doing an iteration"
             )
             isolate({
@@ -84,18 +73,18 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
                 parsed.corpus = parsed,
                 
                 # Input & language
-                corpus.format = input$input.select,
+                corpus.format = input$analyzerInputSelect,
                 encoding = ifelse(
-                  input$utf8.checkbox,
+                  input$analyzerUtf8Checkbox,
                   "UTF-8",
                   "native.enc"
                 ),
-                corpus.lang = input$language.select,
+                corpus.lang = input$analyzerLanguageSelect,
                 
                 # Features
                 analyzed.features = typeSelect(optionVector[[1]]),
                 ngram.size = ifelse(optionVector[[1]], optionVector[[2]], round(optionVector[[2]] / 2)),
-                preserve.case = input$case.checkbox,
+                preserve.case = input$analyzerCaseCheckbox,
                 
                 # Most Frequent Words
                 mfw.min = optionVector[[3]],
@@ -107,22 +96,22 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
                 culling.min = optionVector[[4]],
                 culling.max = optionVector[[4]],
                 culling.incr = 0,
-                mfw.list.cutoff = input$culling.list.cutoff.input,
-                delete.pronouns = input$culling.pronoun.checkbox,
+                mfw.list.cutoff = input$analyzerCullingListCutoffInput,
+                delete.pronouns = input$analyzerCullingPronounCheckbox,
                 
                 #Statistics
-                analysis.type = input$statistics.select,
-                consensus.strength = input$statistics.consensus.input,
-                text.id.on.graph = input$scatterplot.select,
-                add.to.margins = input$scatterplot.margin.input,
-                label.offset = input$scatterplot.offset.input,
-                pca.visual.flavour = input$pca.flavour.select,
-                dendrogram.layout.horizontal = input$clustering.horizontal.checkbox,
+                analysis.type = input$analyzerStatisticsSelect,
+                consensus.strength = input$analyzerStatisticsConsensusInput,
+                text.id.on.graph = input$analyzerScatterplotSelect,
+                add.to.margins = input$analyzerScatterplotMarginInput,
+                label.offset = input$analyzerScatterplotOffsetInput,
+                pca.visual.flavour = input$analyzerPcaFlavourSelect,
+                dendrogram.layout.horizontal = input$analyzerClusteringHorizontalCheckbox,
                 distance.measure = distanceSelect(optionVector[[5]]),
                 
                 # Sampling
-                sampling = input$sampling.select,
-                sample.size = input$sampling.input,
+                sampling = input$analyzerSamplingSelect,
+                sample.size = input$analyzerSamplingInput,
                 
                 # Output
                 display.on.screen = TRUE,
@@ -130,13 +119,13 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
                 write.jpg.file = FALSE,
                 write.png.file = FALSE,
                 write.svg.file = FALSE,
-                plot.options.reset = input$output.plot.default.checkbox,
-                plot.custom.height = input$output.plot.height.input,
-                plot.custom.width = input$output.plot.width.input,
-                plot.font.size = input$output.plot.font.input,
-                plot.line.thickness = input$output.plot.line.input,
-                colors.on.graphs = input$output.plot.colour.choices,
-                titles.on.graphs = input$output.plot.titles.checkbox,
+                plot.options.reset = input$analyzerOutputPlotDefaultCheckbox,
+                plot.custom.height = input$analyzerOutputPlotHeightInput,
+                plot.custom.width = input$analyzerOutputPlotWidthInput,
+                plot.font.size = input$analyzerOutputPlotFontInput,
+                plot.line.thickness = input$analyzerOutputPlotLineInput,
+                colors.on.graphs = input$analyzerOutputPlotColourChoices,
+                titles.on.graphs = input$analyzerOutputPlotTitlesCheckbox,
                 
                 # Undocumented but useful options
                 custom.graph.filename = custom.graph.file.prefix
@@ -192,29 +181,56 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           index <- 1
           candidates <- c()
           results <- c()
-          while(index < input$numberOfPreCycles + 1){
-            candidates[[index]] <- c(
-              ifelse(runif(1) > 0.5, TRUE, FALSE),
-              round(runif(1)*4) + 2,
-              round(runif(1)*16)*5 + 20,
-              round(runif(1)*18)*5,
-              round(runif(1)*6) + 1
+          if (input$usePreCyclesCheckbox) {
+            while(index < input$numberOfPreCycles + 1){
+              candidates[[index]] <- c(
+                ifelse(runif(1) > 0.5, TRUE, FALSE),
+                round(runif(1)*4) + 2,
+                round(runif(1)*16)*5 + 20,
+                round(runif(1)*18)*5,
+                round(runif(1)*6) + 1
+              )
+              if(checkbounds(candidates[[index]])){
+                sc <- 100000
+                try({
+                  parsed <- parseCorpus(typeSelect(candidates[[index]][[1]]), candidates[[index]][[2]])
+                  result <- invokeStylo(candidates[[index]])
+                  sc <- score(result$distance.table)
+                })
+                results[[index]] <- sc
+                lut[[index]] <- candidates[[index]]
+                res[[index]] <- results[[index]]
+                index = index + 1
+              }
+            }
+          } else {
+            j <- 0
+            for (i in c(1,2,3,4,5,6,7,8)) {
+              if(distanceSelect(i) == input$analyzerDistancesSelect) {
+                j <- i
+              }
+            }
+            candidates[[1]] <- c(
+              ifelse(input$analyzerFeaturesSelect == "c", TRUE, FALSE),
+              ifelse(input$analyzerFeaturesSelect == "c", input$analyzerNgramInput * 2, input$analyzerNgramInput),
+              input$analyzerMfwMinimumInput,
+              input$analyzerCullingMinimumInput,
+              j
             )
-            if(checkbounds(candidates[[index]])){
+            if(checkbounds(candidates[[1]])){
               sc <- 100000
               try({
-                parsed <- parseCorpus(typeSelect(candidates[[index]][[1]]), candidates[[index]][[2]])
-                result <- invokeStylo(candidates[[index]])
+                parsed <- parseCorpus(typeSelect(candidates[[1]][[1]]), candidates[[1]][[2]])
+                result <- invokeStylo(candidates[[1]])
                 sc <- score(result$distance.table)
               })
-              results[[index]] <- sc
-              lut[[index]] <- candidates[[index]]
-              res[[index]] <- results[[index]]
-              index = index + 1
+              results[[1]] <- sc
+              lut[[1]] <- candidates[[1]]
+              res[[1]] <- results[[1]]
             }
           }
-          start <- candidates[[match(min(results), results)]]
-          e <- results[[match(min(results), results)]]
+          start <- candidates[[1]]
+          e <- results[[1]]
           changeVector <- c(1, 1, 5, 5, 1)
           
           kmax <- input$numberOfCycles
@@ -275,22 +291,22 @@ function (input, output, session, db.service, log.service, preanalyzer, updater)
           logData[[index2]] <- toString(c(start, e))
           
           fileConn<-file("log.txt")
-          writeLines(logData, fileConn, sep = "\n")
+          writeLines(toString(logData), fileConn, sep = "\n")
           close(fileConn)
           
-          updateSelectInput(session, "wizardFeaturesSelect",
+          updateSelectInput(session, "analyzerFeaturesSelect",
                              selected = typeSelect(start[[1]]))
-          updateNumericInput(session, "wizardNgramInput",
+          updateNumericInput(session, "analyzerNgramInput",
                              value = ifelse(start[[1]], start[[2]], round(start[[2]]/2)))
-          updateNumericInput(session, "wizardMfwMinimumInput",
+          updateNumericInput(session, "analyzerMfwMinimumInput",
                              value = start[[3]])
-          updateNumericInput(session, "wizardMfwMaximumInput",
+          updateNumericInput(session, "analyzerMfwMaximumInput",
                              value = start[[3]])
-          updateNumericInput(session, "wizardCullingMinimumInput",
+          updateNumericInput(session, "analyzerCullingMinimumInput",
                              value = start[[4]])
-          updateNumericInput(session, "wizardCullingMaximumInput",
+          updateNumericInput(session, "analyzerCullingMaximumInput",
                              value = start[[4]])
-          updateSelectInput(session, "wizardDistancesSelect",
+          updateSelectInput(session, "analyzerDistancesSelect",
                             choices = c(
                               "Classic Delta" = "dist.delta",
                               "Argamon's Delta" = "dist.argamon",

@@ -1,77 +1,10 @@
-function (input, output, session, db.service, log.service, preanalyzer, updater, saveSettings, loadSettings) {
+function (input, output, session, db.service, log.service, saveSettings, loadSettings) {
 
   observeEvent(
-    eventExpr = input$wizard.run, 
-    handlerExpr = {
-      if (db.service$is.connected()) {
-        preanalyzer(input, output, session, db.service)
-      } else {
-        
-      }
-    }
-  )
-  
-  observeEvent(
-    eventExpr = input$wizard.previous, 
-    handlerExpr = {
-      select <- as.integer(input$wizard.tabsetpanel)
-      
-      if(select > 1)
-        updateTabsetPanel(
-          session,
-          "wizard.tabsetpanel",
-          selected = toString(select - 1)
-        )
-    }
-  )
-  
-  observeEvent(
-    eventExpr = input$wizard.next, 
-    handlerExpr = {
-      select <- as.integer(input$wizard.tabsetpanel)
-      
-      if(select < 7)
-      updateTabsetPanel(
-        session,
-        "wizard.tabsetpanel",
-        selected = toString(select + 1)
-      )
-    }
-  )
-  
-  observeEvent(
-    eventExpr = input$wizard.save, 
+    eventExpr = input$analyzer.save, 
     handlerExpr = {
       if (db.service$is.connected()) {
         saveSettings(db.service, input)
-      } else {
-        log.service$log(
-          "Please connect to a database!",
-          where = "stylo"
-        )
-      }
-    }
-  )
-  
-  observeEvent(
-    eventExpr = input$wizard.load, 
-    handlerExpr = {
-      if (db.service$is.connected()) {
-        loadSettings(db.service, session, "wizard")
-      } else {
-        log.service$log(
-          "Please connect to a database!",
-          where = "stylo"
-        )
-      }
-    }
-  )
-  
-  observeEvent(
-    eventExpr = input$wizard.load.stylo, 
-    handlerExpr = {
-      if (db.service$is.connected()) {
-        loadSettings(db.service, session, "stylo")
       } else {
         showModal(modalDialog(
           title = "Error",
@@ -84,7 +17,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   )
   
   observeEvent(
-    eventExpr = input$wizard.load.analyzer, 
+    eventExpr = input$analyzer.load, 
     handlerExpr = {
       if (db.service$is.connected()) {
         loadSettings(db.service, session, "analyzer")
@@ -100,10 +33,25 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   )
   
   observeEvent(
-    eventExpr = input$wizard.load.text, 
+    eventExpr = input$analyzer.load.stylo, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        write_file(serialize(fromJSON(input$wizard.load.textbox), NULL), "wizard.conf")
+        loadSettings(db.service, session, "stylo")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$analyzer.load.wizard, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
         loadSettings(db.service, session, "wizard")
       } else {
         showModal(modalDialog(
@@ -117,15 +65,32 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   )
   
   observeEvent(
-    eventExpr = input$wizard.export.text, 
+    eventExpr = input$analyzer.load.text, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        write_file(serialize(fromJSON(input$analyzer.load.textbox), NULL), "analyzer.conf")
+        loadSettings(db.service, session, "analyzer")
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Please download a corpus!",
+          easyClose = TRUE,
+          footer = NULL
+        ))
+      }
+    }
+  )
+  
+  observeEvent(
+    eventExpr = input$analyzer.export.text, 
     handlerExpr = {
       if (db.service$is.connected()) {
         saveSettings(db.service, input)
-        y <- read_file_raw("wizard.conf")
+        y <- read_file_raw("analyzer.conf")
         conffile <- unserialize(connection = y)
         updateTextAreaInput(
           session,
-          "wizard.load.textbox",
+          "analyzer.load.textbox",
           value = toJSON(conffile)
         )
       } else {
@@ -139,10 +104,14 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     }
   )
   
+  sidebar <- reactiveValues(
+    run = 0
+  )
+  
   observe({
     updateSelectInput(
       session, 
-      "wizardInputSelect", 
+      "analyzerInputSelect", 
       choices = c(
         "Plain Text" = "plain",
         "XML" = "xml",
@@ -156,7 +125,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardLanguageSelect", 
+      "analyzerLanguageSelect", 
       choices = c(
         "English" = "English",
         "English w/ contractions" = "English.contr",
@@ -179,7 +148,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardFeaturesSelect", 
+      "analyzerFeaturesSelect", 
       choices = c(
         "Characters" = "c",
         "Words" = "w"
@@ -190,7 +159,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardStatisticsSelect", 
+      "analyzerStatisticsSelect", 
       choices = c(
         "Cluster Analysis" = "CA",
         "MDS" = "MDS",
@@ -205,7 +174,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardScatterplotSelect", 
+      "analyzerScatterplotSelect", 
       choices = c(
         "Labels" = "labels",
         "Points" = "points",
@@ -217,7 +186,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardPcaFlavourSelect", 
+      "analyzerPcaFlavourSelect", 
       choices = c(
         "Classic" = "classic",
         "Loadings" = "loadings",
@@ -230,7 +199,36 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
   observe({
     updateSelectInput(
       session, 
-      "wizardOutputPlotColourChoices", 
+      "analyzerDistancesSelect", 
+      choices = c(
+        "Classic Delta" = "dist.delta",
+        "Argamon's Delta" = "dist.argamon",
+        "Eder's Delta" = "dist.eder",
+        "Eder's Simple Distance" = "dist.simple",
+        "Manhattan" = "dist.manhattan",
+        "Canberra" = "dist.canberra",
+        "Euclidean" = "dist.euclidean",
+        "Cosine" = "dist.cosine"
+      )
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      session, 
+      "analyzerSamplingSelect", 
+      choices = c(
+        "No Sampling" = "no.sampling",
+        "Normal Sampling" = "normal.sampling",
+        "Random Sampling" = "random.sampling"
+      )
+    )
+  })
+  
+  observe({
+    updateSelectInput(
+      session, 
+      "analyzerOutputPlotColourChoices", 
       choices = c(
         "Colours" = "colors",
         "Greyscale" = "greyscale",
@@ -239,13 +237,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     )
   })
   
-  observe({
-    updateSelectInput(
-      session, 
-      "wizardFileName", 
-      choices = c(
-        "config1" = "config1.conf"
-      )
-    )
-  })
+  export <- list(sidebar)
+  names(export) <- c("params")
+  export
 }

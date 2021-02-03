@@ -41,5 +41,5 @@ function(db.service, input){
     input$wizardOutputPlotTitlesCheckbox
   )
   
-  isolate(db.service$upload.save(saveVector))
+  isolate(db.service$upload.save(saveVector, "wizard"))
 }

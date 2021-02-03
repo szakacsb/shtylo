@@ -4,193 +4,193 @@ function(db.service, session, type){
   
   updateSelectInput(
     session,
-    "wizardInputSelect",
+    "input.select",
     selected = saveVector[1]
   )
   
   updateSelectInput(
     session,
-    "wizardLanguageSelect",
+    "language.select",
     selected = saveVector[2]
   )
 
   updateCheckboxInput(
     session,
-    "wizardUtf8Checkbox",
+    "utf8.checkbox",
     value = saveVector[3]
   )
 
   updateSelectInput(
     session,
-    "wizardFeaturesSelect",
+    "features.select",
     selected = saveVector[4]
   )
 
   updateNumericInput(
     session,
-    "wizardNgramInput",
+    "ngram.input",
     value = saveVector[5]
   )
 
   updateCheckboxInput(
     session,
-    "wizardCaseCheckbox",
+    "case.checkbox",
     value = saveVector[6]
   )
 
   updateNumericInput(
     session,
-    "wizardMfwMinimumInput",
+    "mfw.minimum.input",
     value = saveVector[7]
   )
 
   updateNumericInput(
     session,
-    "wizardMfwMaximumInput",
+    "mfw.maximum.input",
     value = saveVector[8]
   )
 
   updateNumericInput(
     session,
-    "wizardMfwIncrementInput",
+    "mfw.increment.input",
     value = saveVector[9]
   )
 
   updateNumericInput(
     session,
-    "wizardMfwFreqRankInput",
+    "mfw.freq.rank.input",
     value = saveVector[10]
   )
 
   updateNumericInput(
     session,
-    "wizardCullingMinimumInput",
+    "culling.minimum.input",
     value = saveVector[11]
   )
 
   updateNumericInput(
     session,
-    "wizardCullingMaximumInput",
+    "culling.maximum.input",
     value = saveVector[12]
   )
 
   updateNumericInput(
     session,
-    "wizardCullingIncrementInput",
+    "culling.increment.input",
     value = saveVector[13]
   )
 
   updateNumericInput(
     session,
-    "wizardCullingListCutoffInput",
+    "culling.list.cutoff.input",
     value = saveVector[14]
   )
 
   updateCheckboxInput(
     session,
-    "wizardCullingPronounCheckbox",
+    "culling.pronoun.checkbox",
     value = saveVector[15]
   )
 
   updateSelectInput(
     session,
-    "wizardStatisticsSelect",
+    "statistics.select",
     selected = saveVector[16]
   )
 
   updateNumericInput(
     session,
-    "wizardStatisticsConsensusInput",
+    "statistics.consensus.input",
     value = saveVector[17]
   )
 
   updateSelectInput(
     session,
-    "wizardScatterplotSelect",
+    "scatterplot.select",
     selected = saveVector[18]
   )
 
   updateNumericInput(
     session,
-    "wizardScatterplotMarginInput",
+    "scatterplot.margin.input",
     value = saveVector[19]
   )
 
   updateNumericInput(
     session,
-    "wizardScatterplotOffsetInput",
+    "scatterplot.offset.input",
     value = saveVector[20]
   )
 
   updateSelectInput(
     session,
-    "wizardPcaFlavourSelect",
+    "pca.flavour.select",
     selected = saveVector[21]
   )
 
   updateCheckboxInput(
     session,
-    "wizardClusteringHorizontalCheckbox",
+    "clustering.horizontal.checkbox",
     value = saveVector[22]
   )
 
   updateSelectInput(
     session,
-    "wizardDistancesSelect",
+    "distances.select",
     selected = saveVector[23]
   )
 
   updateSelectInput(
     session,
-    "wizardSamplingSelect",
+    "sampling.select",
     selected = saveVector[24]
   )
 
   updateNumericInput(
     session,
-    "wizardSamplingInput",
+    "sampling.input",
     value = saveVector[25]
   )
 
   updateNumericInput(
     session,
-    "wizardOutputPlotHeightInput",
+    "output.plot.height.input",
     value = saveVector[26]
   )
 
   updateNumericInput(
     session,
-    "wizardOutputPlotWidthInput",
+    "output.plot.width.input",
     value = saveVector[27]
   )
 
   updateNumericInput(
     session,
-    "wizardOutputPlotFontInput",
+    "output.plot.font.input",
     value = saveVector[28]
   )
 
   updateNumericInput(
     session,
-    "wizardOutputPlotLineInput",
+    "output.plot.line.input",
     value = saveVector[29]
   )
 
   updateSelectInput(
     session,
-    "wizardOutputPlotColourChoices",
+    "output.plot.colour.choices",
     selected = saveVector[30]
   )
 
   updateCheckboxInput(
     session,
-    "wizardOutputPlotDefaultCheckbox",
+    "output.plot.default.checkbox",
     value = saveVector[31]
   )
 
   updateCheckboxInput(
     session,
-    "wizardOutputPlotTitlesCheckbox",
+    "output.plot.titles.checkbox",
     value = saveVector[32]
   )
 }

@@ -3,7 +3,7 @@ style <- "default"
 
 input.language.panel <- wellPanel(
   selectInput(
-    "input.select", 
+    "analyzerInputSelect", 
     "Input", 
     selected = NULL, 
     multiple = FALSE, 
@@ -11,7 +11,7 @@ input.language.panel <- wellPanel(
     width = "100%"
   ),
   selectInput(
-    "language.select", 
+    "analyzerLanguageSelect", 
     "Language", 
     selected = NULL, 
     multiple = FALSE, 
@@ -19,7 +19,7 @@ input.language.panel <- wellPanel(
     width = "100%"
   ),
   checkboxInput(
-    "utf8.checkbox", 
+    "analyzerUtf8Checkbox", 
     "UTF-8", 
     value = TRUE, 
     width = NULL
@@ -28,7 +28,7 @@ input.language.panel <- wellPanel(
 
 features.panel <- wellPanel(
   selectInput(
-    "features.select", 
+    "analyzerFeaturesSelect", 
     "Features", 
     selected = NULL, 
     multiple = FALSE, 
@@ -36,7 +36,7 @@ features.panel <- wellPanel(
     width = "100%"
   ),
   numericInput(
-    "ngram.input", 
+    "analyzerNgramInput", 
     "Ngram size", 
     value = 1, 
     min = 1, 
@@ -45,7 +45,7 @@ features.panel <- wellPanel(
     width = NULL
   ),
   checkboxInput(
-    "case.checkbox", 
+    "analyzerCaseCheckbox", 
     "Preserve Case", 
     value = FALSE, 
     width = NULL
@@ -54,7 +54,7 @@ features.panel <- wellPanel(
 
 mfw.panel <- wellPanel(
   numericInput(
-    "mfw.minimum.input", 
+    "analyzerMfwMinimumInput", 
     "Minimum", 
     value = 100, 
     min = 1, 
@@ -63,7 +63,7 @@ mfw.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "mfw.maximum.input", 
+    "analyzerMfwMaximumInput", 
     "Maximum", 
     value = 100, 
     min = 1, 
@@ -72,7 +72,7 @@ mfw.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "mfw.increment.input", 
+    "analyzerMfwIncrementInput", 
     "Increment", 
     value = 100, 
     min = 1, 
@@ -81,7 +81,7 @@ mfw.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "mfw.freq.rank.input", 
+    "analyzerMfwFreqRankInput", 
     "Starting frequency rank", 
     value = 1, 
     min = 1, 
@@ -93,7 +93,7 @@ mfw.panel <- wellPanel(
 
 culling.panel <- wellPanel(
   numericInput(
-    "culling.minimum.input", 
+    "analyzerCullingMinimumInput", 
     "Minimum", 
     value = 0, 
     min = 0, 
@@ -102,7 +102,7 @@ culling.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "culling.maximum.input", 
+    "analyzerCullingMaximumInput", 
     "Maximum", 
     value = 0, 
     min = 0, 
@@ -111,7 +111,7 @@ culling.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "culling.increment.input", 
+    "analyzerCullingIncrementInput", 
     "Increment", 
     value = 20, 
     min = 1, 
@@ -120,7 +120,7 @@ culling.panel <- wellPanel(
     width = NULL
   ),
   numericInput(
-    "culling.list.cutoff.input", 
+    "analyzerCullingListCutoffInput", 
     "List cutoff", 
     value = 5000, 
     min = 1, 
@@ -129,7 +129,7 @@ culling.panel <- wellPanel(
     width = NULL
   ),
   checkboxInput(
-    "culling.pronoun.checkbox", 
+    "analyzerCullingPronounCheckbox", 
     "Delete pronouns", 
     value = FALSE, 
     width = NULL
@@ -138,7 +138,7 @@ culling.panel <- wellPanel(
 
 statistics.panel <- wellPanel(
   selectInput(
-    "statistics.select", 
+    "analyzerStatisticsSelect", 
     "Statistics", 
     selected = NULL, 
     multiple = FALSE, 
@@ -148,7 +148,7 @@ statistics.panel <- wellPanel(
   conditionalPanel(
     condition = "input['statistics.select'] === 'BCT'",
     numericInput(
-      "statistics.consensus.input", 
+      "analyzerStatisticsConsensusInput", 
       "Consensus Strength", 
       value = 0.5, 
       min = 0.4, 
@@ -162,7 +162,7 @@ statistics.panel <- wellPanel(
     condition = "['MDS', 'PCV', 'PCR'].indexOf(input['statistics.select']) !== -1",
     HTML('<hr style="color: grey;">'),
     selectInput(
-      "scatterplot.select", 
+      "analyzerScatterplotSelect", 
       "Texts on plot", 
       selected = NULL, 
       multiple = FALSE, 
@@ -170,7 +170,7 @@ statistics.panel <- wellPanel(
       width = "100%"
     ),
     numericInput(
-      "scatterplot.margin.input", 
+      "analyzerScatterplotMarginInput", 
       "Margins", 
       value = 2, 
       min = 1, 
@@ -179,7 +179,7 @@ statistics.panel <- wellPanel(
       width = NULL
     ),
     numericInput(
-      "scatterplot.offset.input", 
+      "analyzerScatterplotOffsetInput", 
       "Label offset", 
       value = 3, 
       min = 1, 
@@ -193,7 +193,7 @@ statistics.panel <- wellPanel(
     condition = "['PCV', 'PCR'].indexOf(input['statistics.select']) !== -1",
     HTML('<hr style="color: grey;">'),
     selectInput(
-      "pca.flavour.select", 
+      "analyzerPcaFlavourSelect", 
       "PCA flavour", 
       selected = NULL, 
       multiple = FALSE, 
@@ -206,7 +206,7 @@ statistics.panel <- wellPanel(
     condition = "input['statistics.select'] === 'CA'",
     HTML('<hr style="color: grey;">'),
     checkboxInput(
-      "clustering.horizontal.checkbox", 
+      "analyzerClusteringHorizontalCheckbox", 
       "Horizontal CA tree", 
       value = TRUE, 
       width = NULL
@@ -214,7 +214,7 @@ statistics.panel <- wellPanel(
     HTML('<hr style="color: grey;">')
   ),
   selectInput(
-    "distances.select", 
+    "analyzerDistancesSelect", 
     "Distances", 
     selected = NULL, 
     multiple = FALSE, 
@@ -225,7 +225,7 @@ statistics.panel <- wellPanel(
 
 sampling.panel <- wellPanel(
   selectInput(
-    "sampling.select", 
+    "analyzerSamplingSelect", 
     "Sampling Method", 
     selected = NULL, 
     multiple = FALSE, 
@@ -235,7 +235,7 @@ sampling.panel <- wellPanel(
   conditionalPanel(
     condition = "input['sampling.select'] === 'normal.sampling'",
     numericInput(
-      "sampling.input", 
+      "analyzerSamplingInput", 
       "Sample Size", 
       value = 10000, 
       min = 1, 
@@ -247,7 +247,7 @@ sampling.panel <- wellPanel(
   conditionalPanel(
     condition = "input['sampling.select'] === 'random.sampling'",
     numericInput(
-      "sampling.input", 
+      "analyzerSamplingInput", 
       "Random Samples", 
       value = 10000, 
       min = 1, 
@@ -260,7 +260,7 @@ sampling.panel <- wellPanel(
 
 output.panel <- wellPanel(
     numericInput(
-      "output.plot.height.input", 
+      "analyzerOutputPlotHeightInput", 
       "Plot Height", 
       value = 10, 
       min = 1, 
@@ -269,7 +269,7 @@ output.panel <- wellPanel(
       width = NULL
     ),
     numericInput(
-      "output.plot.width.input", 
+      "analyzerOutputPlotWidthInput", 
       "Plot Width", 
       value = 10, 
       min = 1, 
@@ -278,7 +278,7 @@ output.panel <- wellPanel(
       width = NULL
     ),
     numericInput(
-      "output.plot.font.input", 
+      "analyzerOutputPlotFontInput", 
       "Font Size", 
       value = 10, 
       min = 1, 
@@ -287,7 +287,7 @@ output.panel <- wellPanel(
       width = NULL
     ),
     numericInput(
-      "output.plot.line.input", 
+      "analyzerOutputPlotLineInput", 
       "Line Width", 
       value = 1, 
       min = 1, 
@@ -296,7 +296,7 @@ output.panel <- wellPanel(
       width = NULL
     ),
     selectInput(
-      "output.plot.colour.choices", 
+      "analyzerOutputPlotColourChoices", 
       "Plot Colours", 
       choices = NULL, 
       selected = NULL, 
@@ -304,25 +304,24 @@ output.panel <- wellPanel(
       width = NULL
     ),
     checkboxInput(
-      "output.plot.default.checkbox", 
+      "analyzerOutputPlotDefaultCheckbox", 
       "Set defaults", 
       value = FALSE, 
       width = NULL
     ),
     checkboxInput(
-      "output.plot.titles.checkbox", 
+      "analyzerOutputPlotTitlesCheckbox", 
       "Display titles", 
       value = FALSE, 
       width = NULL
     )
 )
 
-
 # create the stylometry sidebar
 sidebarPanel(
   width = 12,
   bsCollapse(
-    id = "stylo.sidebar",
+    id = "analyzer.sidebar",
     open = "Manage Settings",
     bsCollapsePanel(
       title = "Input & Language",
@@ -363,48 +362,41 @@ sidebarPanel(
       title = "Manage Settings",
       style = style,
       wellPanel(
-        style = style,
         actionButton(
-          "stylo.save",
+          "analyzer.save",
           label = "Save Settings"
         ),
         actionButton(
-          "stylo.load",
+          "analyzer.load",
           label = "Load Settings"
         )
       ),
       wellPanel(
-        style = style,
         textAreaInput(
-          "stylo.load.textbox",
+          "analyzer.load.textbox",
           "Paste text here",
           value = "",
           width = "100%"
         ),
         actionButton(
-          "stylo.load.text",
+          "analyzer.load.text",
           label = "Load from text"
         ),
         actionButton(
-          "stylo.export.text",
+          "analyzer.export.text",
           label = "Save to text"
         )
       ),
       wellPanel(
-        style = style,
         actionButton(
-          "stylo.load.wizard",
-          label = "Load from Wizard"
+          "analyzer.load.stylo",
+          label = "Load from Stylo"
         ),
         actionButton(
-          "stylo.load.analyzer",
-          label = "Load from Analyzer"
+          "analyzer.load.wizard",
+          label = "Load from Wizard"
         )
       )
     )
-  ),
-  actionButton(
-    "stylo.run",
-    label = "Run Stylo"
   )
 )

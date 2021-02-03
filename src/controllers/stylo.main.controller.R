@@ -30,7 +30,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         session = isolate(shiny.session),
         style = "notification",
         expr = {
-          corpus <- isolate(db.service$load.corpus())
+          corpus <- isolate(db.service$load.collection())
           
           incProgress(
             amount = 0.2,
@@ -43,7 +43,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
               "UTF-8",
               "native.enc"
             ),
-            language = input$language.select,
+            corpus.lang = input$language.select,
             features = input$features.select,
             ngram.size = input$ngram.input
             # sampling = input$sampling.select,

@@ -1,6 +1,6 @@
 # import the stylometry view
 stylo.view <- dget("./views/stylo.view.R")
-db.view <- dget("./views/db.view.R")
+corpus.view <- dget("./views/corpus.view.R")
 
 # Define the top level menu
 fluidPage(
@@ -12,31 +12,16 @@ fluidPage(
     title = "Shtylo",
     id = "root.page",
     tabPanel(
-      title = "Database",
-      value = "database",
+      title = "Corpus",
+      value = "corpus",
       icon = icon(name = "database", lib = "font-awesome"),
-      db.view
+      corpus.view
     ),
     tabPanel(
       title = "Stylometry",
       value = "stylometry",
       icon = icon(name = "paint-brush", lib = "font-awesome"),
       stylo.view
-    ),
-    tabPanel(
-      title = "Classification",
-      value = "classification",
-      icon = icon(name = "sitemap", lib = "font-awesome")
-    ),
-    tabPanel(
-      title = "Rolling Delta",
-      value = "rolling-delta",
-      icon = icon(name = "line-chart", lib = "font-awesome")
-    ),
-    tabPanel(
-      title = "Rolling Classification",
-      value = "rolling-classification",
-      icon = icon(name = "sort-amount-asc", lib = "font-awesome")
     ),
     navbarMenu(
       title = "More",

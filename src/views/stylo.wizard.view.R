@@ -300,7 +300,7 @@ wizard.culling.panel <- tabPanel(
         options=list(container="body")
       ),
       numericInput(
-        "WizadrCullingIncrementInput", 
+        "wizardCullingIncrementInput", 
         "Increment", 
         value = 20, 
         min = 1, 
@@ -309,7 +309,7 @@ wizard.culling.panel <- tabPanel(
         width = NULL
       ),
       bsPopover(
-        "WizadrCullingIncrementInput",
+        "wizardCullingIncrementInput",
         "Increment",
         wizard.culling.increment.tooltip,
         placement = "right",
@@ -739,35 +739,55 @@ div(
     column(
       6,
       actionButton(
+        "wizard.run",
+        label = "Run Wizard"
+      ),
+      actionButton(
         "wizard.previous",
         label = "Previous"
       ),
       actionButton(
         "wizard.next",
         label = "Next"
-      ),
-      actionButton(
-        "wizard.apply",
-        label = "Apply"
       )
     ),
     column(
       6,
-      # selectInput(
-      #   "wizardFileName", 
-      #   "Saved Settings", 
-      #   selected = NULL, 
-      #   multiple = FALSE, 
-      #   choices = NULL, 
-      #   width = "100%"
-      # ),
-      actionButton(
-        "wizard.save",
-        label = "Save Settings"
+      wellPanel(
+        actionButton(
+          "wizard.save",
+          label = "Save Settings"
+        ),
+        actionButton(
+          "wizard.load",
+          label = "Load Settings"
+        )
       ),
-      actionButton(
-        "wizard.load",
-        label = "Load Settings"
+      wellPanel(
+        textAreaInput(
+          "wizard.load.textbox",
+          "Paste text here",
+          value = "",
+          width = "100%"
+        ),
+        actionButton(
+          "wizard.load.text",
+          label = "Load from text"
+        ),
+        actionButton(
+          "wizard.export.text",
+          label = "Save to text"
+        )
+      ),
+      wellPanel(
+        actionButton(
+          "wizard.load.stylo",
+          label = "Load from Stylo"
+        ),
+        actionButton(
+          "wizard.load.analyzer",
+          label = "Load from Analyzer"
+        )
       )
     )
   )
