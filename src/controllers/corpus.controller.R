@@ -26,7 +26,7 @@ function (input, output, session, log.service) {
         unzip(paste(input$corpus.name, ".zip", sep = ""))
         log.service$log(
           "Succesfully downloaded corpus.",
-          where = "db"
+          where = "corpus"
         )
       })
   })
