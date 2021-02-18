@@ -1,4 +1,3 @@
-
 style <- "default"
 
 input.language.panel <- wellPanel(
@@ -317,12 +316,41 @@ output.panel <- wellPanel(
     )
 )
 
+cycles.panel <- wellPanel(
+    checkboxInput(
+      "usePreCyclesCheckbox",
+      "Set defaults",
+      value = FALSE,
+      width = NULL
+    ),
+    conditionalPanel(
+      condition = "input['usePreCyclesCheckbox'] === true",
+      numericInput(
+        "numberOfPreCycles",
+        "Number of Pre-Cycles",
+        value = 10,
+        min = 1,
+        max = NA,
+        step = 1,
+        width = NULL
+      )
+    ),
+    numericInput(
+      "numberOfCycles",
+      "Number of Cycles",
+      value = 40,
+      min = 1,
+      max = NA,
+      step = 1,
+      width = NULL
+    )
+)
+
 # create the stylometry sidebar
 sidebarPanel(
   width = 12,
   bsCollapse(
     id = "analyzer.sidebar",
-    open = "Manage Settings",
     bsCollapsePanel(
       title = "Input & Language",
       style = style,
@@ -397,6 +425,15 @@ sidebarPanel(
           label = "Load from Wizard"
         )
       )
+    ),
+    bsCollapsePanel(
+      title = "Analyzer Cycles",
+      style = style,
+      cycles.panel
     )
+  ),
+  actionButton(
+      "analyzer.run",
+      label = "Run Analyzer"
   )
 )

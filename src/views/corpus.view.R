@@ -9,7 +9,7 @@ corpus.main.view <- mainPanel(
   ),
   div(
     h5(
-      "Corpus details"
+      "Corpus log"
     ),
     verbatimTextOutput(
       "corpusConsole"
@@ -21,7 +21,7 @@ corpus.main.view <- mainPanel(
 corpus.config.view <- sidebarPanel(
   width = 12,
   wellPanel(
-    textInput("corpus.url", "Corpus Storage (zip file)", value = "", width = "100%", placeholder = "https://.../corpus.zip"),
+    textInput("corpus.url", "Corpus URL (zip file)", value = "", width = "100%", placeholder = "https://.../corpus.zip"),
     textInput("corpus.name", "Corpus Name", value = "", width = "100%", placeholder = "my_corpus"),
     actionButton("corpus.download", "Download", icon = icon(name = "plug", lib = "font-awesome"))
   )
