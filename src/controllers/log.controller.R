@@ -5,26 +5,33 @@ function (input, output, session) {
   )
   
   console <- reactiveValues(
-    db.log = c(),
-    stylo.log = c()
+    corpus.log = c(),
+    stylo.log = c(),
+    wizard.log = c()
   )
   
   log <- function (msg, where) {
     entry <- paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg, sep = " ")
-    if (where == "db") {
-      console$db.log <- c(entry, console$db.log)
+    if (where == "corpus") {
+      console$corpus.log <- c(entry, console$corpus.log)
     } else if (where == "stylo"){
       console$stylo.log <- c(entry,console$stylo.log)
+    } else if (where == "wizard"){
+      console$wizard.log <- c(entry,console$wizard.log)
     }
   }
   
-  output$dbConsole <- renderText({
-    return(paste(console$db.log, collapse = '\n'))
+  output$corpusConsole <- renderText({
+    return(paste(console$corpus.log, collapse = '\n'))
   })
   
   
   output$styloConsole <- renderText({
     return(paste(console$stylo.log, collapse = '\n'))
+  })
+
+  output$wizardConsole <- renderText({
+    return(paste(console$wizard.log, collapse = '\n'))
   })
   
   export <- list(console, log, default.label)

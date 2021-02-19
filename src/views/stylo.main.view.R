@@ -8,14 +8,6 @@ mainPanel(
       '#styloConsole {overflow-y:scroll; min-height: 200px; max-height: 200px;'
     )
   ),
-  div(
-    h5(
-      "Stylometry Log"
-    ),
-    verbatimTextOutput(
-      "styloConsole" # CSS doesn't like dotted names :(
-    )
-  ),
   tabsetPanel(
     type = "tabs",
     id = "stylo.result.panel",
@@ -116,6 +108,16 @@ mainPanel(
           width = "100%",
           style = "overflow-y:scroll; max-height: 550px",
           verbatimTextOutput("used.features.table")
+        )
+      )
+    ),
+    tabPanel(
+      "Stylometry Log",
+      div(
+        width = "100%",
+        div(
+          width = "100%",
+          verbatimTextOutput("styloConsole")
         )
       )
     )

@@ -34,7 +34,7 @@ function (input, output, session, log.service) {
       }) %...>% {}
       log.service$log(
         "Succesfully downloaded corpus.",
-        where = "db"
+        where = "corpus"
       )
       progress$close()
     },

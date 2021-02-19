@@ -109,7 +109,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             "UTF-8",
             "native.enc"
           ),
-          corpus.lang = i2,
+          #corpus.lang = i2,
           
           # Features
           analyzed.features = typeSelect(optionVector[[1]]),
@@ -128,7 +128,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
           culling.incr = 0,
           mfw.list.cutoff = i5,
           delete.pronouns = i6,
-          
+
           #Statistics
           analysis.type = i7,
           consensus.strength = i8,

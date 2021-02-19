@@ -30,12 +30,12 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     handlerExpr = {
       select <- as.integer(input$wizard.tabsetpanel)
       
-      if(select < 7)
-      updateTabsetPanel(
-        session,
-        "wizard.tabsetpanel",
-        selected = toString(select + 1)
-      )
+      if(select < 8)
+        updateTabsetPanel(
+          session,
+          "wizard.tabsetpanel",
+          selected = toString(select + 1)
+        )
     }
   )
   
@@ -47,7 +47,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
       } else {
         log.service$log(
           "Please connect to a database!",
-          where = "stylo"
+          where = "wizard"
         )
       }
     }
@@ -61,7 +61,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
       } else {
         log.service$log(
           "Please connect to a database!",
-          where = "stylo"
+          where = "wizard"
         )
       }
     }

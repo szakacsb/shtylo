@@ -1,4 +1,3 @@
-
 style <- "default"
 
 input.language.panel <- wellPanel(
@@ -323,7 +322,7 @@ sidebarPanel(
   width = 12,
   bsCollapse(
     id = "stylo.sidebar",
-    open = "Manage Settings",
+    # open = "Manage Settings",
     bsCollapsePanel(
       title = "Input & Language",
       style = style,

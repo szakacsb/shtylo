@@ -68,15 +68,16 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         detail = "Parsing corpus"
       )
       
-      parsed <- parse.corpus(corpus,
-                             encoding = ifelse(
-                               i1,
-                               "UTF-8",
-                               "native.enc"
-                             ),
-                             corpus.lang = i2,
-                             features = i3,
-                             ngram.size = i4
+      parsed <- parse.corpus(
+        corpus,
+        encoding = ifelse(
+         i1,
+         "UTF-8",
+         "native.enc"
+        ),
+        #corpus.lang = i2,
+        features = i3,
+        ngram.size = i4
       )
       
       progress$set(

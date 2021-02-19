@@ -44,6 +44,8 @@ wizard.output.plot.colour.tooltip <- read_file("./texts/output/wizard.output.plo
 wizard.output.plot.default.tooltip <- read_file("./texts/output/wizard.output.plot.default.tooltip.txt")
 wizard.output.plot.titles.tooltip <- read_file("./texts/output/wizard.output.plot.titles.tooltip.txt")
 wizard.output.help <- read_file("./texts/output/wizard.output.help.txt")
+wizard.help <- read_file("./texts/wizard.help.txt")
+wizard.settings.help <- read_file("./texts/settings.help.txt")
 
 wizard.inputAndLanguage.panel <- tabPanel(
   "Input & language",
@@ -721,36 +723,10 @@ wizard.output.panel <- tabPanel(
   )
 )
 
-div(
-  h4(
-    "Wizard"
-  ),
-  tabsetPanel(
-    id = "wizard.tabsetpanel",
-    wizard.inputAndLanguage.panel,
-    wizard.features.panel,
-    wizard.mfw.panel,
-    wizard.culling.panel,
-    wizard.statistics.panel,
-    wizard.sampling.panel,
-    wizard.output.panel
-  ),
+wizard.settings.panel <- tabPanel(
+  "Manage Settings",
+  value = "8",
   fluidRow(
-    column(
-      6,
-      actionButton(
-        "wizard.run",
-        label = "Run Wizard"
-      ),
-      actionButton(
-        "wizard.previous",
-        label = "Previous"
-      ),
-      actionButton(
-        "wizard.next",
-        label = "Next"
-      )
-    ),
     column(
       6,
       wellPanel(
@@ -789,7 +765,51 @@ div(
           label = "Load from Analyzer"
         )
       )
+    ),
+    column(
+      6, # width out of 12
+      div(
+        wizard.settings.help
+      )
     )
   )
 )
-  
+
+div(
+  tabsetPanel(
+    id = "wizard.tabsetpanel",
+    wizard.inputAndLanguage.panel,
+    wizard.features.panel,
+    wizard.mfw.panel,
+    wizard.culling.panel,
+    wizard.statistics.panel,
+    wizard.sampling.panel,
+    wizard.output.panel,
+    wizard.settings.panel
+  ),
+  div(
+      actionButton(
+        "wizard.run",
+        label = "Run Wizard"
+      ),
+      actionButton(
+        "wizard.previous",
+        label = "Previous"
+      ),
+      actionButton(
+        "wizard.next",
+        label = "Next"
+      )
+  ),
+  fluidRow(
+    column(
+      12,
+      h4(
+        "Wizard Log"
+      ),
+      verbatimTextOutput(
+        "wizardConsole"
+      )
+    )
+  )
+)
