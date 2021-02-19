@@ -6,29 +6,44 @@ function (input, output, session, log.service) {
   }
   
   observeEvent(input$corpus.download, {
-    withProgress(
-      message = "Downloading corpus",
-      min = 0,
-      max = 1,
-      detail = "Setting up corpus",
-      style = "notification",
-      expr = {
-        set.workspace(input$corpus.name)
-        incProgress(
-          amount = 0.1,
-          detail = "Downloading .zip file"
-        )
-        download.file(input$corpus.url, paste(input$corpus.name, ".zip", sep = ""), "curl")
-        incProgress(
-          amount = 0.4,
+    tryCatch({
+      #session$corpus.ready <- TRUE
+      i1 <- input$corpus.name
+      i2 <- input$corpus.url
+      progress <- AsyncProgress$new(
+        message = "Downloading corpus",
+        min = 0,
+        max = 1,
+        detail = "Setting up corpus",
+        style = "notification",
+        session = session
+      )
+      set.workspace(i1)
+      progress$set(
+        value = 0.2,
+        detail = "Downloading .zip file"
+      )
+      future({
+        download.file(i2, paste(i1, ".zip", sep = ""), "curl")
+        progress$set(
+          value = 0.8,
           detail = "Extracting .zip file"
         )
-        unzip(paste(input$corpus.name, ".zip", sep = ""))
-        log.service$log(
-          "Succesfully downloaded corpus.",
-          where = "db"
-        )
-      })
+        unzip(paste(i1, ".zip", sep = ""))
+        
+      }) %...>% {}
+      log.service$log(
+        "Succesfully downloaded corpus.",
+        where = "db"
+      )
+      progress$close()
+    },
+    error=function(cond){
+      showModal(modalDialog(
+        title = "Error",
+        "Downloading failed."
+      ))
+    })
   })
 
   load.collection <- function () {

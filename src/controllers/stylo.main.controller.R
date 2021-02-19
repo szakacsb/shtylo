@@ -14,129 +14,163 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     local = TRUE
   )
   
+  dat <- reactive({
+    progress <- AsyncProgress$new(
+      message = "Stylometry job in progress",
+      min = 0,
+      max = 1,
+      detail = "Loading corpus",
+      style = "notification",
+      session = shiny.session
+    )
+    corpus <- db.service$load.collection()
+    session$stylo <- NULL
+    
+    sink(stylo.output.connection)
+    
+    i1 <- input$utf8.checkbox
+    i2 <- input$language.select
+    i3 <- input$features.select
+    i4 <- input$ngram.input
+    i5 <- input$input.select
+    i6 <- input$case.checkbox
+    i7 <- input$mfw.minimum.input
+    i8 <- input$mfw.maximum.input
+    i9 <- input$mfw.increment.input
+    i10 <- input$mfw.freq.rank.input
+    i11 <- input$culling.minimum.input
+    i12 <- input$culling.maximum.input
+    i13 <- input$culling.increment.input
+    i14 <- input$culling.list.cutoff.input
+    i15 <- input$culling.pronoun.checkbox
+    i16 <- input$statistics.select
+    i17 <- input$statistics.consensus.input
+    i18 <- input$scatterplot.select
+    i19 <- input$scatterplot.margin.input
+    i20 <- input$scatterplot.offset.input
+    i21 <- input$pca.flavour.select
+    i22 <- input$clustering.horizontal.checkbox
+    i23 <- input$distances.select
+    i24 <- input$output.plot.default.checkbox
+    i25 <- input$output.plot.height.input
+    i26 <- input$output.plot.width.input
+    i27 <- input$output.plot.font.input
+    i28 <- input$output.plot.line.input
+    i29 <- input$output.plot.colour.choices
+    i30 <- input$output.plot.titles.checkbox
+    i31 <- custom.graph.file.prefix
+    i32 <- input$sampling.select
+    i33 <- input$sampling.input
+    
+    future({
+      progress$set(
+        value = 0.2,
+        detail = "Parsing corpus"
+      )
+      
+      parsed <- parse.corpus(corpus,
+                             encoding = ifelse(
+                               i1,
+                               "UTF-8",
+                               "native.enc"
+                             ),
+                             corpus.lang = i2,
+                             features = i3,
+                             ngram.size = i4
+      )
+      
+      progress$set(
+        value = 0.4,
+        detail = "Capturing Stylo console output"
+      )
+      
+      progress$set(
+        value = 0.6,
+        detail = "Invoking Stylo"
+      )
+      
+      session$stylo <- stylo(
+        
+        # Invoke without GUI with predefined corpus
+        gui = FALSE,
+        parsed.corpus = parsed,
+        
+        # Input & language
+        corpus.format = i5,
+        encoding = ifelse(
+          i1,
+          "UTF-8",
+          "native.enc"
+        ),
+        corpus.lang = i2,
+        
+        # Features
+        analyzed.features = i3,
+        ngram.size = i4,
+        preserve.case = i6,
+        
+        # Most Frequent Words
+        mfw.min = i7,
+        mfw.max = i8,
+        mfw.incr = i9,
+        start.at = i10,
+        
+        # Culling
+        culling.min = i11,
+        culling.max = i12,
+        culling.incr = i13,
+        mfw.list.cutoff = i14,
+        delete.pronouns = i15,
+        
+        #Statistics
+        analysis.type = i16,
+        consensus.strength = i17,
+        text.id.on.graph = i18,
+        add.to.margins = i19,
+        label.offset = i20,
+        pca.visual.flavour = i21,
+        dendrogram.layout.horizontal = i22,
+        distance.measure = i23,
+        
+        # Sampling
+        sampling = i32,
+        sample.size = i33,
+        
+        # Output
+        display.on.screen = TRUE,
+        write.pdf.file = TRUE,
+        write.jpg.file = TRUE,
+        write.png.file = TRUE,
+        write.svg.file = TRUE,
+        plot.options.reset = i24,
+        plot.custom.height = i25,
+        plot.custom.width = i26,
+        plot.font.size = i27,
+        plot.line.thickness = i28,
+        colors.on.graphs = i29,
+        titles.on.graphs = i30,
+        
+        # Undocumented but useful options
+        custom.graph.filename = i31
+      )
+      
+      progress$set(
+        value = 1.0,
+        detail = "Releasing console output"
+      )
+      
+      progress$close()
+      sink()
+    })
+    
+  })
+
   # plot controller
   output$stylo.plot <- renderPlot({
     if (input$stylo.run == 0) {
       return()
     } else {
-      isolate({
-        session$stylo <- NULL
-      })
-      withProgress(
-        message = "Stylometry job in progress",
-        min = 0,
-        max = 1,
-        detail = "Loading corpus",
-        session = isolate(shiny.session),
-        style = "notification",
-        expr = {
-          corpus <- isolate(db.service$load.collection())
-          
-          incProgress(
-            amount = 0.2,
-            detail = "Parsing corpus"
-          )
-          
-          parsed <- parse.corpus(corpus,
-            encoding = ifelse(
-              input$utf8.checkbox,
-              "UTF-8",
-              "native.enc"
-            ),
-            corpus.lang = input$language.select,
-            features = input$features.select,
-            ngram.size = input$ngram.input
-            # sampling = input$sampling.select,
-            # sample.size = input$sampling.input
-          )
-          
-          incProgress(
-            amount = 0.2,
-            detail = "Capturing Stylo console output"
-          )
-
-          sink(stylo.output.connection)
-
-          incProgress(
-            amount = 0.2,
-            detail = "Invoking Stylo"
-          )
-
-          isolate({
-            session$stylo <- stylo(
-              
-              # Invoke without GUI with predefined corpus
-              gui = FALSE,
-              parsed.corpus = parsed,
-
-              # Input & language
-              corpus.format = input$input.select,
-              encoding = ifelse(
-                input$utf8.checkbox,
-                "UTF-8",
-                "native.enc"
-              ),
-              corpus.lang = input$language.select,
-
-              # Features
-              analyzed.features = input$features.select,
-              ngram.size = input$ngram.input,
-              preserve.case = input$case.checkbox,
-
-              # Most Frequent Words
-              mfw.min = input$mfw.minimum.input,
-              mfw.max = input$mfw.maximum.input,
-              mfw.incr = input$mfw.increment.input,
-              start.at = input$mfw.freq.rank.input,
-
-              # Culling
-              culling.min = input$culling.minimum.input,
-              culling.max = input$culling.maximum.input,
-              culling.incr = input$culling.increment.input,
-              mfw.list.cutoff = input$culling.list.cutoff.input,
-              delete.pronouns = input$culling.pronoun.checkbox,
-
-              #Statistics
-              analysis.type = input$statistics.select,
-              consensus.strength = input$statistics.consensus.input,
-              text.id.on.graph = input$scatterplot.select,
-              add.to.margins = input$scatterplot.margin.input,
-              label.offset = input$scatterplot.offset.input,
-              pca.visual.flavour = input$pca.flavour.select,
-              dendrogram.layout.horizontal = input$clustering.horizontal.checkbox,
-              distance.measure = input$distances.select,
-
-              # Sampling
-              sampling = input$sampling.select,
-              sample.size = input$sampling.input,
-
-              # Output
-              display.on.screen = TRUE,
-              write.pdf.file = TRUE,
-              write.jpg.file = TRUE,
-              write.png.file = TRUE,
-              write.svg.file = TRUE,
-              plot.options.reset = input$output.plot.default.checkbox,
-              plot.custom.height = input$output.plot.height.input,
-              plot.custom.width = input$output.plot.width.input,
-              plot.font.size = input$output.plot.font.input,
-              plot.line.thickness = input$output.plot.line.input,
-              colors.on.graphs = input$output.plot.colour.choices,
-              titles.on.graphs = input$output.plot.titles.checkbox,
-
-              # Undocumented but useful options
-              custom.graph.filename = custom.graph.file.prefix
-            )
-          })
-          
-          incProgress(
-            amount = 0.4,
-            detail = "Releasing console output"
-          )
-          
-          sink()
-        }
-      )
+      dat() %...>% {.}
     }
   })
   
