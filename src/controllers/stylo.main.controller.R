@@ -43,7 +43,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
               "UTF-8",
               "native.enc"
             ),
-            corpus.lang = input$language.select,
+            # corpus.lang = input$language.select,
             features = input$features.select,
             ngram.size = input$ngram.input
             # sampling = input$sampling.select,

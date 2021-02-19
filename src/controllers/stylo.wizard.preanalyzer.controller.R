@@ -19,11 +19,11 @@ function(input, output, session, db.service) {
           "UTF-8",
           "native.enc"
         ),
-        corpus.lang = ifelse(
-          "language.select" %in% input$names,
-          input$language.select,
-          'hungarian'
-        ),
+        # corpus.lang = ifelse(
+        #   "language.select" %in% input$names,
+        #   input$language.select,
+        #   'hungarian'
+        # ),
         features = "w",
         ngram.size = 1
         # sampling = input$sampling.select,

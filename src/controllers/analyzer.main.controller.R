@@ -79,7 +79,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
                   "UTF-8",
                   "native.enc"
                 ),
-                corpus.lang = input$analyzerLanguageSelect,
+                # corpus.lang = input$analyzerLanguageSelect,
                 
                 # Features
                 analyzed.features = typeSelect(optionVector[[1]]),
