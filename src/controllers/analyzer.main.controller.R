@@ -4,6 +4,18 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
     
     eventExpr = input$analyzer.run, 
     handlerExpr = {
+      if (!db.service$is.connected()) {
+        showModal(modalDialog(
+          title = "Error",
+          "Corpus does not exists!"
+        ))
+        log.service$log(
+          "Corpus does not exists!",
+          where = "analyzer"
+        )
+        return()
+      }
+      
       progress <- AsyncProgress$new(
         message = "Analyzer in progress",
         min = 0,
@@ -337,7 +349,6 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
         
         start
       }) %...>% {
-        print("done")
         updateSelectInput(session, "analyzerFeaturesSelect",
                           selected = typeSelect(.[[1]]))
         updateNumericInput(session, "analyzerNgramInput",
@@ -361,7 +372,12 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
                             "Euclidean" = "dist.euclidean",
                             "Cosine" = "dist.cosine"
                           ), selected = distanceSelect(.[[5]])
-      )}
+        )
+        log.service$log(
+          "Analyzer invoked",
+          where = "analyzer"
+        )
+      }
     }
   )
 }

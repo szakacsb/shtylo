@@ -5,8 +5,19 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     handlerExpr = {
       if (db.service$is.connected()) {
         preanalyzer(input, output, session, db.service)
+        log.service$log(
+          "Wizard invoked...",
+          where = "wizard"
+        )
       } else {
-        
+        showModal(modalDialog(
+          title = "Error",
+          "Corpus does not exist!"
+        ))
+        log.service$log(
+          "Corpus does not exist!",
+          where = "wizard"
+        )
       }
     }
   )

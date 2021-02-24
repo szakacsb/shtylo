@@ -115,24 +115,7 @@ function (input, output, session, db.service, log.service, saveSettings, loadSet
     }
   )
   
-  observeEvent(
-    eventExpr = input$stylo.run, 
-    handlerExpr = {
-      if (db.service$is.connected()) {
-        tmp <- sidebar$run
-        sidebar$run <- tmp + 1
-        log.service$log(
-          "Stylo invoked with given parameters...",
-          where = "stylo"
-        )
-      } else {
-        log.service$log(
-          "Please connect to a database!",
-          where = "stylo"
-        )
-      }
-    }
-  )
+  
   
   sidebar <- reactiveValues(
     run = 0

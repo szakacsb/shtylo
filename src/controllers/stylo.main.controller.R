@@ -165,15 +165,33 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     })
     
   })
+  
+  observeEvent(
+    eventExpr = input$stylo.run, 
+    handlerExpr = {
+      if (db.service$is.connected()) {
+        log.service$log(
+          "Stylo invoked with given parameters...",
+          where = "stylo"
+        )
+        output$stylo.plot <- renderPlot({
+          dat() %...>% {.}
+        })
+      } else {
+        showModal(modalDialog(
+          title = "Error",
+          "Corpus does not exist!"
+        ))
+        log.service$log(
+          "Corpus does not exist!",
+          where = "stylo"
+        )
+      }
+    }
+  )
 
   # plot controller
-  output$stylo.plot <- renderPlot({
-    if (input$stylo.run == 0) {
-      return()
-    } else {
-      dat() %...>% {.}
-    }
-  })
+  
   
   # frequency table controller
   output$frequency.table <- renderTable({

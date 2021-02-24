@@ -6,44 +6,54 @@ function (input, output, session, log.service) {
   }
   
   observeEvent(input$corpus.download, {
-    tryCatch({
-      #session$corpus.ready <- TRUE
-      i1 <- input$corpus.name
-      i2 <- input$corpus.url
-      progress <- AsyncProgress$new(
-        message = "Downloading corpus",
-        min = 0,
-        max = 1,
-        detail = "Setting up corpus",
-        style = "notification",
-        session = session
-      )
+    #session$corpus.ready <- TRUE
+    i1 <- input$corpus.name
+    i2 <- input$corpus.url
+    set.workspace(i1)
+    progress <- AsyncProgress$new(
+      message = "Downloading corpus",
+      min = 0,
+      max = 1,
+      detail = "Setting up corpus",
+      style = "notification",
+      session = session
+    )
+    progress$set(
+      value = 0.2,
+      detail = "Downloading .zip file"
+    )
+    future({
       set.workspace(i1)
-      progress$set(
-        value = 0.2,
-        detail = "Downloading .zip file"
-      )
-      future({
+      tryCatch({
         download.file(i2, paste(i1, ".zip", sep = ""), "curl")
         progress$set(
           value = 0.8,
           detail = "Extracting .zip file"
         )
         unzip(paste(i1, ".zip", sep = ""))
-        
-      }) %...>% {}
-      log.service$log(
-        "Succesfully downloaded corpus.",
-        where = "corpus"
-      )
-      progress$close()
-    },
-    error=function(cond){
-      showModal(modalDialog(
-        title = "Error",
-        "Downloading failed."
-      ))
-    })
+        FALSE
+      },
+      error=function(cond){
+        TRUE
+      })
+    }) %...>% {
+      if (.) {
+        showModal(modalDialog(
+          title = "Error",
+          "Downloading and extracting failed."
+        ))
+        log.service$log(
+          "Could not download or extract corpus.",
+          where = "corpus"
+        )
+      } else {
+        log.service$log(
+          "Succesfully downloaded corpus.",
+          where = "corpus"
+        )
+      }
+    }
+    progress$close()
   })
 
   load.collection <- function () {
@@ -62,7 +72,7 @@ function (input, output, session, log.service) {
   }
   
   is.connected <- function () {
-    return(TRUE)
+    return(file.exists("./corpus"))
   }
   
   export <- list(load.collection, is.connected, load.save, upload.save)

@@ -18,6 +18,8 @@ function (input, output, session) {
       console$stylo.log <- c(entry,console$stylo.log)
     } else if (where == "wizard"){
       console$wizard.log <- c(entry,console$wizard.log)
+    } else if (where == "analyzer"){
+      console$analyzer.log <- c(entry,console$analyzer.log)
     }
   }
   
@@ -32,6 +34,10 @@ function (input, output, session) {
 
   output$wizardConsole <- renderText({
     return(paste(console$wizard.log, collapse = '\n'))
+  })
+  
+  output$analyzerConsole <- renderText({
+    return(paste(console$analyzer.log, collapse = '\n'))
   })
   
   export <- list(console, log, default.label)
