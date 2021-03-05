@@ -67,7 +67,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             "UTF-8",
             "native.enc"
           ),
-          corpus.lang = i2,
+          #corpus.lang = i2,
           features = feature,
           ngram.size = ngram
         )
