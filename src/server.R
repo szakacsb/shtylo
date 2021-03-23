@@ -61,7 +61,8 @@ shinyServer(function(input, output, session) {
     session, 
     corpus.service, 
     log.service,
-    stylo.analyzer.params.service
+    stylo.analyzer.params.service,
+    stylo.analyzer.saveSettings
   )
     
   #initialize stylometry plots
