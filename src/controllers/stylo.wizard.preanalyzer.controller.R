@@ -13,7 +13,7 @@ function(input, output, session, db.service, saveSettings) {
     corpus <- isolate(db.service$load.collection())
     progress$set(
       value = 0.5,
-      detail = "parsing the corpus"
+      detail = "corpus preprocessing"
     )
     parsed <- parse.corpus(
       corpus, 
@@ -34,7 +34,7 @@ function(input, output, session, db.service, saveSettings) {
     )
     progress$set(
       value = 0.8,
-      detail = "analyzing the corpus"
+      detail = "corpus analysis"
     )
     frequencyList <- make.frequency.list(parsed, value = TRUE)
     
