@@ -7,13 +7,13 @@ function(input, output, session, db.service) {
     style = "notification",
     session = session
   )
+  disable_run_buttons(session)
   future({
     corpus <- isolate(db.service$load.collection())
     progress$set(
       value = 0.5,
       detail = "Parsing corpus"
     )
-    
     parsed <- parse.corpus(
       corpus, 
       encoding = ifelse(
@@ -42,19 +42,15 @@ function(input, output, session, db.service) {
     secondCap <- 0.05
     
     feat_ <- "w"
-    val_ <- 2
+    ngramsize_ <- 2
     if(meanOfFreq < firstCap){
       feat_ <- "c"
-      val_ <- 3
+      ngramsize_ <- 3
     } else if(meanOfFreq < secondCap){
       feat_ <- "w"
-      val_ <- 1
+      ngramsize_ <- 1
     }
-    updateSelectInput(session, "wizardFeaturesSelect",
-                      selected = feat_)
-    updateNumericInput(session, "wizardNgramInput",
-                       value = val_)
-    
+   
     topFrequencyList <- frequencyList[1:10]
     output$wizard.tfwTable <- renderTable(
       topFrequencyList,
@@ -62,12 +58,8 @@ function(input, output, session, db.service) {
     )
     frequencyList2 <- make.frequency.list(parsed, value = TRUE, relative = FALSE)
     avglen <- sum(frequencyList2) / length(frequencyList2)
-    val_ <- round((avglen / (avglen + 5)) * 100)
-    updateNumericInput(session, "wizardMfwMinimumInput",
-                       value = val_)
-    updateNumericInput(session, "wizardMfwMaximumInput",
-                       value = val_)
-    
+    mfwmin_ <- round((avglen / (avglen + 5)) * 100)
+   
     lengths_ <- vector(mode = "numeric", length = length(corpus))
     i <- 0
     for(item in corpus){
@@ -77,24 +69,7 @@ function(input, output, session, db.service) {
     }
     avgOfFileLength <- mean(lengths_)
     culling_ <- round((avgOfFileLength / (avgOfFileLength + (100000 / length(corpus)))) * 100)
-    updateNumericInput(session, "wizardCullingMinimumInput",
-                       value = culling_)
-    updateNumericInput(session, "wizardCullingMaximumInput",
-                       value = culling_)
-    
-    if(length(frequencyList) > sum(frequencyList2)/10){
-      updateNumericInput(
-        session,
-        "wizardCullingListCutoffInput",
-        value = round(sum(frequencyList2)/10)
-      )
-    }
-    
-    updateCheckboxInput(session,
-      "wizardCullingPronounCheckbox",
-      value = TRUE
-    )
-    
+   
     namesOfCorpus <- c()
     numbersOfCorpus <- c()
     index <- 1
@@ -127,13 +102,37 @@ function(input, output, session, db.service) {
       }
     }
     progress$close()
-    c(length(corpus), mean(lengths_), isVariedLength, isVariedDistance)
+    c(length(corpus), mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), sum(frequencyList2)/10, mfwmin_)
   }) %...>% {
+    enable_run_buttons(session)
+    updateSelectInput(session, "wizardFeaturesSelect",
+                      selected = .[[5]])
+    updateNumericInput(session, "wizardNgramInput",
+                       value = .[[6]])
+    updateNumericInput(session, "wizardCullingMinimumInput",
+                       value = .[[7]])
+    updateNumericInput(session, "wizardCullingMaximumInput",
+                       value = .[[7]])
+    if(.[[8]] > .[[9]]){
+      updateNumericInput(
+        session,
+        "wizardCullingListCutoffInput",
+        value = round(.[[9]])
+      )
+    }
+    updateNumericInput(session, "wizardMfwMinimumInput",
+                       value = .[[10]])
+    updateNumericInput(session, "wizardMfwMaximumInput",
+                       value = .[[10]])
+ 
+    updateCheckboxInput(session,
+      "wizardCullingPronounCheckbox",
+      value = TRUE
+    )
     updateNumericInput(session,
                        "wizardOutputPlotHeightInput",
                        value = 10 + round(.[[1]] / 5)
     )
-    
     updateNumericInput(session,
                        "wizardOutputPlotWidthInput",
                        value = 10 + round(.[[1]] / 10)
