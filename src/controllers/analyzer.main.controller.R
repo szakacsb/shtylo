@@ -2,7 +2,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
   
   observeEvent(
     
-    eventExpr = input$analyzer.run, 
+    eventExpr = input$AnalyzerRun,
     handlerExpr = {
       if (!db.service$is.connected()) {
         showModal(modalDialog(

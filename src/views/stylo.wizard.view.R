@@ -788,9 +788,10 @@ div(
     wizard.settings.panel
   ),
   div(
-      actionButton(
-        "wizard.run",
+      bsButton(
+        "WizardRun",
         label = "Run Wizard",
+	type = "action",
 	disabled = TRUE
       ),
       actionButton(

@@ -167,7 +167,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   })
   
   observeEvent(
-    eventExpr = input$stylo.run, 
+    eventExpr = input$StyloRun,
     handlerExpr = {
       if (db.service$is.connected()) {
         log.service$log(

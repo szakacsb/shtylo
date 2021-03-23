@@ -41,9 +41,12 @@ function (input, output, session, log.service) {
     tryCatch({
         value(proc_download)
         log.service$log(
-          "Succesfully downloaded corpus.",
+          "Succesfully downloaded the corpus.",
           where = "corpus"
         )
+        updateButton(session, "WizardRun", disabled = FALSE)
+        updateButton(session, "AnalyzerRun", disabled = FALSE)
+        updateButton(session, "StyloRun", disabled = FALSE)
       },
       error = function(ex) {
         log.service$log(
