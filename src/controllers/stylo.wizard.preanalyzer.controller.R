@@ -1,8 +1,8 @@
-function(input, output, session, db.service) {
+function(input, output, session, db.service, saveSettings) {
   disable_run_buttons(session)
   disable_download(session)
   progress <- AsyncProgress$new(
-    message = "Analyzer in progress",
+    message = "Wizard is running",
     min = 0,
     max = 1,
     detail = "Loading corpus",
@@ -34,7 +34,7 @@ function(input, output, session, db.service) {
     )
     progress$set(
       value = 0.8,
-      detail = "Analyzing corpus"
+      detail = "Wizard analyzes the corpus"
     )
     frequencyList <- make.frequency.list(parsed, value = TRUE)
     
@@ -60,8 +60,8 @@ function(input, output, session, db.service) {
     frequencyList2 <- make.frequency.list(parsed, value = TRUE, relative = FALSE)
     avglen <- sum(frequencyList2) / length(frequencyList2)
     mfwmin_ <- round((avglen / (avglen + 5)) * 100)
-   
-    lengths_ <- vector(mode = "numeric", length = length(corpus))
+    corpus_len <- length(corpus)
+    lengths_ <- vector(mode = "numeric", length = corpus_len)
     i <- 0
     for(item in corpus){
       var_ <- txt.to.words.ext(item)
@@ -69,7 +69,7 @@ function(input, output, session, db.service) {
       i = i + 1
     }
     avgOfFileLength <- mean(lengths_)
-    culling_ <- round((avgOfFileLength / (avgOfFileLength + (100000 / length(corpus)))) * 100)
+    culling_ <- round((avgOfFileLength / (avgOfFileLength + (100000 / corpus_len))) * 100)
    
     namesOfCorpus <- c()
     numbersOfCorpus <- c()
@@ -103,10 +103,10 @@ function(input, output, session, db.service) {
       }
     }
     progress$close()
-    c(length(corpus), mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), sum(frequencyList2)/10, mfwmin_)
+    c(corpus_len, mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), round(sum(frequencyList2)/10), mfwmin_)
   }) %...>% {
-    enable_run_buttons(session)
-    enable_download(session)
+    corpus_len <- strtoi(.[[1]])
+    mean <- strtoi(.[[2]])
     updateSelectInput(session, "wizardFeaturesSelect",
                       selected = .[[5]])
     updateNumericInput(session, "wizardNgramInput",
@@ -119,7 +119,7 @@ function(input, output, session, db.service) {
       updateNumericInput(
         session,
         "wizardCullingListCutoffInput",
-        value = round(.[[9]])
+        value = .[[9]]
       )
     }
     updateNumericInput(session, "wizardMfwMinimumInput",
@@ -133,16 +133,15 @@ function(input, output, session, db.service) {
     )
     updateNumericInput(session,
                        "wizardOutputPlotHeightInput",
-                       value = 10 + round(.[[1]] / 5)
+                       value = 10 + round(corpus_len / 5)
     )
     updateNumericInput(session,
                        "wizardOutputPlotWidthInput",
-                       value = 10 + round(.[[1]] / 10)
+                       value = 10 + round(corpus_len / 10)
     )
-    
     updateNumericInput(session,
                        "wizardSamplingInput",
-                       value = round(.[[2]] / 2)
+                       value = round(mean / 2)
     )
     
     if(.[[3]]){
@@ -155,7 +154,7 @@ function(input, output, session, db.service) {
         "No Sampling" = "no.sampling"
       )
     }
-    
+
     if(.[[4]]){
       distanceSet <- c(
         "Eder's Simple Distance" = "dist.simple",
@@ -187,5 +186,8 @@ function(input, output, session, db.service) {
       "stylo.start.tabsetpanel",
       selected = "Wizard"
     )
+    saveSettings(db.service, input)
+    enable_run_buttons(session)
+    enable_download(session)
   }
 }
