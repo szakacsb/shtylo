@@ -1,4 +1,4 @@
-function (input, output, session, db.service, log.service, stylo.analyzer.params.service) {
+function (input, output, session, db.service, log.service, stylo.analyzer.params.service, saveSettings) {
   
   observeEvent(
     
@@ -220,8 +220,6 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
       disable_run_buttons(session)
       disable_download(session)
       future({
-        
-          
         lut <- c()
         res <- c()
         index <- 1
@@ -238,7 +236,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             )
             progress$set(
               value = 0.1 + (index/(i25+1))*0.4,
-              detail = "Doing a pre-iteration"
+              detail = paste("Doing PreCycle step #", index)
             )
             if(checkbounds(candidates[[index]])){
               sc <- 100000
@@ -322,7 +320,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             k = k - 1
             progress$set(
               value = 0.6 + 0.5*((kmax-k)/kmax),
-              detail = "Doing an iteration"
+              detail = paste("Doing iteration step #", kmax - k)
             )
           }
         }
@@ -379,6 +377,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
           "Analyzer invoked",
           where = "analyzer"
         )
+        saveSettings(db.service, input)
         enable_run_buttons(session)
         enable_download(session)
       }
