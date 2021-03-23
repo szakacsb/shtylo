@@ -7,8 +7,8 @@ function (input, output, session, log.service) {
   
   observeEvent(input$corpus.download, {
     #session$corpus.ready <- TRUE
-    i1 <- input$corpus.name
-    i2 <- input$corpus.url
+    i1 <- trimws(input$corpus.name)
+    i2 <- trimws(input$corpus.url)
     set.workspace(i1)
     progress <- AsyncProgress$new(
       message = "Downloading corpus",
