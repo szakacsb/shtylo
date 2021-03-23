@@ -1,17 +1,19 @@
 function (input, output, session, log.service) {
   
-  set.workspace <- function (corpus) {
-    dir.create(file.path(wd, corpus), showWarnings = FALSE)
-    setwd(paste(wd, corpus, sep = "/"))
-  }
-  
   observeEvent(input$CorpusDownload, {
     #session$corpus.ready <- TRUE
     i1 <- trimws(input$corpus.name)
     i2 <- trimws(input$corpus.url)
+    if (corpus_exists(i1)) {
+      showModal(modalDialog(
+          title = "Error",
+          "Corpus name is already used. Choose a different name!"
+        ))
+      return()
+    }
     disable_run_buttons(session)
     disable_download(session)
-    set.workspace(i1)
+    setwd(get_corpus_path(session, i1))
     progress <- AsyncProgress$new(
       message = "Downloading corpus",
       min = 0,
@@ -25,7 +27,7 @@ function (input, output, session, log.service) {
       detail = "Downloading .zip file"
     )
     proc_download <- future({
-      set.workspace(i1)
+      setwd(get_corpus_path(session, i1))
       download.file(i2, paste(i1, ".zip", sep = ""), "curl", extra="--insecure")
       if (file.info(paste(i1, ".zip", sep = ""))$size < 100) {
 	stop("File download failed. Check the URL.")
