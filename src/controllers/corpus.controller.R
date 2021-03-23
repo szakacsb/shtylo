@@ -22,37 +22,38 @@ function (input, output, session, log.service) {
       value = 0.2,
       detail = "Downloading .zip file"
     )
-    future({
+    proc_download <- future({
       set.workspace(i1)
-      tryCatch({
-        download.file(i2, paste(i1, ".zip", sep = ""), "curl")
-        progress$set(
-          value = 0.8,
-          detail = "Extracting .zip file"
-        )
-        unzip(paste(i1, ".zip", sep = ""))
-        FALSE
-      },
-      error=function(cond){
-        TRUE
-      })
-    }) %...>% {
-      if (.) {
-        showModal(modalDialog(
-          title = "Error",
-          "Downloading and extracting failed."
-        ))
-        log.service$log(
-          "Could not download or extract corpus.",
-          where = "corpus"
-        )
-      } else {
+      download.file(i2, paste(i1, ".zip", sep = ""), "curl", extra="--insecure")
+      if (file.info(paste(i1, ".zip", sep = ""))$size < 100) {
+	stop("File download failed. Check the URL.")
+      }
+      progress$set(
+        value = 0.8,
+        detail = "Extracting .zip file",
+        message = "Extracting .zip file"
+      )
+      unzip(paste(i1, ".zip", sep = ""))
+      if (!dir.exists('corpus')) {
+	stop("Corpus directory does not exists in the downloaded file.")
+      }
+    })
+    tryCatch({
+        value(proc_download)
         log.service$log(
           "Succesfully downloaded corpus.",
           where = "corpus"
         )
+      },
+      error = function(ex) {
+        log.service$log(
+          paste("Downloading and extracting failed.", ex),
+          where = "corpus"
+        )
+        # trace <- backtrace(proc_download)
+        # print(trace)
       }
-    }
+    )
     progress$close()
   })
 
