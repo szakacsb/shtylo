@@ -105,6 +105,8 @@ function(input, output, session, db.service) {
     progress$close()
     c(length(corpus), mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), sum(frequencyList2)/10, mfwmin_)
   }) %...>% {
+    enable_run_buttons(session)
+    enable_download(session)
     updateSelectInput(session, "wizardFeaturesSelect",
                       selected = .[[5]])
     updateNumericInput(session, "wizardNgramInput",
@@ -117,7 +119,7 @@ function(input, output, session, db.service) {
       updateNumericInput(
         session,
         "wizardCullingListCutoffInput",
-        value = round(int(.[[9]]))
+        value = round(.[[9]])
       )
     }
     updateNumericInput(session, "wizardMfwMinimumInput",
@@ -185,7 +187,5 @@ function(input, output, session, db.service) {
       "stylo.start.tabsetpanel",
       selected = "Wizard"
     )
-    enable_run_buttons(session)
-    enable_download(session)
   }
 }
