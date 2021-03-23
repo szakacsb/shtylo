@@ -287,8 +287,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   output$download.plot <- downloadHandler(
     filename = function() {
       paste(
-        input$db.database, 
-        input$db.collection, 
+        input$corpus.name,
         input$output.plot.format.choices, 
         sep = "."
       )
