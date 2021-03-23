@@ -117,7 +117,7 @@ function(input, output, session, db.service) {
       updateNumericInput(
         session,
         "wizardCullingListCutoffInput",
-        value = round(.[[9]])
+        value = round(int(.[[9]]))
       )
     }
     updateNumericInput(session, "wizardMfwMinimumInput",
