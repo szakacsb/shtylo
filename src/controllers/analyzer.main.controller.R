@@ -17,7 +17,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
       }
       
       progress <- AsyncProgress$new(
-        message = "Analyzer in progress",
+        message = "Analyzer is running",
         min = 0,
         max = 1,
         detail = "Loading corpus",
@@ -80,7 +80,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
       
       progress$set(
         value = 0.1,
-        detail = "Initializing variables"
+        detail = "variable initialization"
       )
       
       distanceSelect <- function(x){
@@ -236,7 +236,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             )
             progress$set(
               value = 0.1 + (index/(i25+1))*0.4,
-              detail = paste("Doing PreCycle step #", index)
+              detail = paste("Pre-Cycle step #", index)
             )
             if(checkbounds(candidates[[index]])){
               sc <- 100000
@@ -320,7 +320,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
             k = k - 1
             progress$set(
               value = 0.6 + 0.5*((kmax-k)/kmax),
-              detail = paste("Doing iteration step #", kmax - k)
+              detail = paste("iteration step #", kmax - k)
             )
           }
         }
