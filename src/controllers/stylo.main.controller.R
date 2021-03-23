@@ -173,7 +173,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         disable_run_buttons(shiny.session)
         disable_download(shiny.session)
         log.service$log(
-          "Stylo invoked with given parameters...",
+          paste("Stylo version", packageVersion("stylo"),
+          "invoked with given parameters"),
           where = "stylo"
         )
         output$stylo.plot <- renderPlot({
