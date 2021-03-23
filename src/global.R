@@ -24,3 +24,20 @@ for (key in names(shtylo.properties)) {
 
 wd <- normalizePath(shtylo.properties$wd, winslash = "\\")
 custom.graph.file.prefix <- shtylo.properties$custom.graph.file.prefix
+
+disable_run_buttons <- function(session) {
+  updateButton(session, "WizardRun", disabled = TRUE)
+  updateButton(session, "AnalyzerRun", disabled = TRUE)
+  updateButton(session, "StyloRun", disabled = TRUE)
+}
+enable_run_buttons <- function(session) {
+  updateButton(session, "WizardRun", disabled = FALSE)
+  updateButton(session, "AnalyzerRun", disabled = FALSE)
+  updateButton(session, "StyloRun", disabled = FALSE)
+}
+disable_download <- function(session) {
+  updateButton(session, "CorpusDownload", disabled = TRUE)
+}
+enable_download <- function(session) {
+  updateButton(session, "CorpusDownload", disabled = FALSE)
+}

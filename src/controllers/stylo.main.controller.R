@@ -170,12 +170,18 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     eventExpr = input$StyloRun,
     handlerExpr = {
       if (db.service$is.connected()) {
+        disable_run_buttons(shiny.session)
+        disable_download(shiny.session)
         log.service$log(
           "Stylo invoked with given parameters...",
           where = "stylo"
         )
         output$stylo.plot <- renderPlot({
-          dat() %...>% {.}
+          dat() %...>% {
+            enable_run_buttons(shiny.session)
+            enable_download(shiny.session)
+            .
+	  }
         })
       } else {
         showModal(modalDialog(

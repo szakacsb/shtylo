@@ -1,4 +1,6 @@
 function(input, output, session, db.service) {
+  disable_run_buttons(session)
+  disable_download(session)
   progress <- AsyncProgress$new(
     message = "Analyzer in progress",
     min = 0,
@@ -7,7 +9,6 @@ function(input, output, session, db.service) {
     style = "notification",
     session = session
   )
-  disable_run_buttons(session)
   future({
     corpus <- isolate(db.service$load.collection())
     progress$set(
@@ -104,7 +105,6 @@ function(input, output, session, db.service) {
     progress$close()
     c(length(corpus), mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), sum(frequencyList2)/10, mfwmin_)
   }) %...>% {
-    enable_run_buttons(session)
     updateSelectInput(session, "wizardFeaturesSelect",
                       selected = .[[5]])
     updateNumericInput(session, "wizardNgramInput",
@@ -185,5 +185,7 @@ function(input, output, session, db.service) {
       "stylo.start.tabsetpanel",
       selected = "Wizard"
     )
+    enable_run_buttons(session)
+    enable_download(session)
   }
 }

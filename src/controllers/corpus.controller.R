@@ -5,10 +5,12 @@ function (input, output, session, log.service) {
     setwd(paste(wd, corpus, sep = "/"))
   }
   
-  observeEvent(input$corpus.download, {
+  observeEvent(input$CorpusDownload, {
     #session$corpus.ready <- TRUE
     i1 <- trimws(input$corpus.name)
     i2 <- trimws(input$corpus.url)
+    disable_run_buttons(session)
+    disable_download(session)
     set.workspace(i1)
     progress <- AsyncProgress$new(
       message = "Downloading corpus",
@@ -44,9 +46,7 @@ function (input, output, session, log.service) {
           "Succesfully downloaded the corpus.",
           where = "corpus"
         )
-        updateButton(session, "WizardRun", disabled = FALSE)
-        updateButton(session, "AnalyzerRun", disabled = FALSE)
-        updateButton(session, "StyloRun", disabled = FALSE)
+        enable_run_buttons(session)
       },
       error = function(ex) {
         log.service$log(
@@ -58,6 +58,7 @@ function (input, output, session, log.service) {
       }
     )
     progress$close()
+    enable_download(session)
   })
 
   load.collection <- function () {

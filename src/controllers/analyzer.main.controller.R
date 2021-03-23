@@ -217,6 +217,8 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
         return(TRUE)
       }
           
+      disable_run_buttons(session)
+      disable_download(session)
       future({
         
           
@@ -377,6 +379,8 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
           "Analyzer invoked",
           where = "analyzer"
         )
+        enable_run_buttons(session)
+        enable_download(session)
       }
     }
   )
