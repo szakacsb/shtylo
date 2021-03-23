@@ -4,7 +4,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     eventExpr = input$WizardRun,
     handlerExpr = {
       if (db.service$is.connected()) {
-        preanalyzer(input, output, session, db.service)
+        preanalyzer(input, output, session, db.service, saveSettings)
         log.service$log(
           "Wizard invoked...",
           where = "wizard"
