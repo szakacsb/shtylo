@@ -434,6 +434,7 @@ sidebarPanel(
   ),
   actionButton(
       "analyzer.run",
-      label = "Run Analyzer"
+      label = "Run Analyzer",
+      disabled = TRUE
   )
 )

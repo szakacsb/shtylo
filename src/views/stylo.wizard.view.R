@@ -790,7 +790,8 @@ div(
   div(
       actionButton(
         "wizard.run",
-        label = "Run Wizard"
+        label = "Run Wizard",
+	disabled = TRUE
       ),
       actionButton(
         "wizard.previous",
