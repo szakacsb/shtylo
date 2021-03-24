@@ -23,7 +23,7 @@ corpus.config.view <- sidebarPanel(
   wellPanel(
     textInput("corpus.url", "Corpus URL (zip file)", value = "", width = "100%", placeholder = "https://.../corpus.zip"),
     textInput("corpus.name", "Corpus Name", value = "", width = "100%", placeholder = "my_corpus"),
-    actionButton("corpus.download", "Download", icon = icon(name = "plug", lib = "font-awesome"))
+    bsButton("CorpusDownload", label = "Download", type = "action", icon = icon(name = "plug", lib = "font-awesome"))
   )
 )
 

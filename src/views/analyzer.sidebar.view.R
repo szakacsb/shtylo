@@ -432,8 +432,10 @@ sidebarPanel(
       cycles.panel
     )
   ),
-  actionButton(
-      "analyzer.run",
-      label = "Run Analyzer"
+  bsButton(
+      "AnalyzerRun",
+      type="action",
+      label = "Run Analyzer",
+      disabled = TRUE
   )
 )

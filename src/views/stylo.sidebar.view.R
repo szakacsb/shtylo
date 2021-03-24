@@ -402,8 +402,10 @@ sidebarPanel(
       )
     )
   ),
-  actionButton(
-    "stylo.run",
-    label = "Run Stylo"
+  bsButton(
+    "StyloRun",
+    type="action",
+    label = "Run Stylo",
+    disabled = TRUE
   )
 )

@@ -167,15 +167,22 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   })
   
   observeEvent(
-    eventExpr = input$stylo.run, 
+    eventExpr = input$StyloRun,
     handlerExpr = {
       if (db.service$is.connected()) {
+        disable_run_buttons(shiny.session)
+        disable_download(shiny.session)
         log.service$log(
-          "Stylo invoked with given parameters...",
+          paste("Stylo version", packageVersion("stylo"),
+          "invoked with given parameters"),
           where = "stylo"
         )
         output$stylo.plot <- renderPlot({
-          dat() %...>% {.}
+          dat() %...>% {
+            enable_run_buttons(shiny.session)
+            enable_download(shiny.session)
+            .
+	  }
         })
       } else {
         showModal(modalDialog(
@@ -281,8 +288,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   output$download.plot <- downloadHandler(
     filename = function() {
       paste(
-        input$db.database, 
-        input$db.collection, 
+        input$corpus.name,
         input$output.plot.format.choices, 
         sep = "."
       )

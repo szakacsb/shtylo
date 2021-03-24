@@ -61,7 +61,8 @@ shinyServer(function(input, output, session) {
     session, 
     corpus.service, 
     log.service,
-    stylo.analyzer.params.service
+    stylo.analyzer.params.service,
+    stylo.analyzer.saveSettings
   )
     
   #initialize stylometry plots
@@ -73,4 +74,7 @@ shinyServer(function(input, output, session) {
     log.service, 
     stylo.params.service
   )
+
+  # ensure that buttons are disabled
+  disable_run_buttons(session)
 })
