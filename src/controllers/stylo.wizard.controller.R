@@ -1,5 +1,44 @@
 function (input, output, session, db.service, log.service, preanalyzer, updater, saveSettings, loadSettings) {
 
+  # the stored console output
+  wizard.output <- vector('character')
+  wizard.output.connection <- textConnection(
+    object = "wizard.output",
+    open = "a",
+    local = TRUE
+  )
+  
+  observeEvent(poll.wizard.output(), {
+    entry <- poll.wizard.output()
+    if (entry != "") {
+      log.service$log(
+        entry,
+        where = "wizard"
+      )
+    }
+  })
+  
+  poll.wizard.output <- reactivePoll(
+    intervalMillis = 1000, 
+    session = session,
+    # check for change of value to be printed
+    checkFunc = function() {
+      if (length(wizard.output) > 0) {
+        TRUE
+      } else {
+        FALSE
+      }
+    },
+    # This function returns the content of the log entry
+    valueFunc = function() {
+      if (length(wizard.output) > 0) {
+        rev(wizard.output)
+      } else {
+        ""
+      }
+    }
+  )
+  
   observeEvent(
     eventExpr = input$WizardRun,
     handlerExpr = {

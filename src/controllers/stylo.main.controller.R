@@ -3,7 +3,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   # store the stylo output in a reactive variable
   session <- reactiveValues(
     stylo = NULL,
-    job.status = "IDLE"
+    jobDone = FALSE
   )
   
   # the stored console output of the stylo command
@@ -14,7 +14,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     local = TRUE
   )
   
-  dat <- reactive({
+  dat <- function(){
+    
     progress <- AsyncProgress$new(
       message = "Stylometry job in progress",
       min = 0,
@@ -23,10 +24,12 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
       style = "notification",
       session = shiny.session
     )
+    
     corpus <- db.service$load.collection()
-    session$stylo <- NULL
+    #session$stylo <- NULL
     
     sink(stylo.output.connection)
+    sink(stylo.output.connection, type = "message")
     
     i1 <- input$utf8.checkbox
     i2 <- input$language.select
@@ -63,108 +66,132 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     i33 <- input$sampling.input
     
     future({
-      progress$set(
-        value = 0.2,
-        detail = "Parsing corpus"
+      result <- NULL
+      tryCatch(
+        {
+          progress$set(
+            value = 0.2,
+            detail = "Parsing corpus"
+          )
+          
+          parsed <- parse.corpus(
+            corpus,
+            encoding = ifelse(
+              i1,
+              "UTF-8",
+              "native.enc"
+            ),
+            #corpus.lang = i2,
+            features = i3,
+            ngram.size = i4
+          )
+          
+          progress$set(
+            value = 0.4,
+            detail = "Capturing Stylo console output"
+          )
+          
+          progress$set(
+            value = 0.6,
+            detail = "Invoking Stylo"
+          )
+          
+          result <- stylo(
+            
+            # Invoke without GUI with predefined corpus
+            gui = FALSE,
+            parsed.corpus = parsed,
+            
+            # Input & language
+            corpus.format = i5,
+            encoding = ifelse(
+              i1,
+              "UTF-8",
+              "native.enc"
+            ),
+            corpus.lang = i2,
+            
+            # Features
+            analyzed.features = i3,
+            ngram.size = i4,
+            preserve.case = i6,
+            
+            # Most Frequent Words
+            mfw.min = i7,
+            mfw.max = i8,
+            mfw.incr = i9,
+            start.at = i10,
+            
+            # Culling
+            culling.min = i11,
+            culling.max = i12,
+            culling.incr = i13,
+            mfw.list.cutoff = i14,
+            delete.pronouns = i15,
+            
+            #Statistics
+            analysis.type = i16,
+            consensus.strength = i17,
+            text.id.on.graph = i18,
+            add.to.margins = i19,
+            label.offset = i20,
+            pca.visual.flavour = i21,
+            dendrogram.layout.horizontal = i22,
+            distance.measure = i23,
+            
+            # Sampling
+            sampling = i32,
+            sample.size = i33,
+            
+            # Output
+            display.on.screen = TRUE,
+            write.pdf.file = TRUE,
+            write.jpg.file = TRUE,
+            write.png.file = TRUE,
+            write.svg.file = TRUE,
+            plot.options.reset = i24,
+            plot.custom.height = i25,
+            plot.custom.width = i26,
+            plot.font.size = i27,
+            plot.line.thickness = i28,
+            colors.on.graphs = i29,
+            titles.on.graphs = i30,
+            
+            # Undocumented but useful options
+            custom.graph.filename = i31
+          )
+          
+          progress$set(
+            value = 1.0,
+            detail = "Releasing console output"
+          )
+          
+          progress$close()
+          sink()
+          sink(type = "message")
+        },
+        finally=function(){
+          progress$close()
+          sink()
+          sink(type = "message")
+        }
       )
-      
-      parsed <- parse.corpus(
-        corpus,
-        encoding = ifelse(
-         i1,
-         "UTF-8",
-         "native.enc"
-        ),
-        #corpus.lang = i2,
-        features = i3,
-        ngram.size = i4
-      )
-      
-      progress$set(
-        value = 0.4,
-        detail = "Capturing Stylo console output"
-      )
-      
-      progress$set(
-        value = 0.6,
-        detail = "Invoking Stylo"
-      )
-      
-      session$stylo <- stylo(
-        
-        # Invoke without GUI with predefined corpus
-        gui = FALSE,
-        parsed.corpus = parsed,
-        
-        # Input & language
-        corpus.format = i5,
-        encoding = ifelse(
-          i1,
-          "UTF-8",
-          "native.enc"
-        ),
-        corpus.lang = i2,
-        
-        # Features
-        analyzed.features = i3,
-        ngram.size = i4,
-        preserve.case = i6,
-        
-        # Most Frequent Words
-        mfw.min = i7,
-        mfw.max = i8,
-        mfw.incr = i9,
-        start.at = i10,
-        
-        # Culling
-        culling.min = i11,
-        culling.max = i12,
-        culling.incr = i13,
-        mfw.list.cutoff = i14,
-        delete.pronouns = i15,
-        
-        #Statistics
-        analysis.type = i16,
-        consensus.strength = i17,
-        text.id.on.graph = i18,
-        add.to.margins = i19,
-        label.offset = i20,
-        pca.visual.flavour = i21,
-        dendrogram.layout.horizontal = i22,
-        distance.measure = i23,
-        
-        # Sampling
-        sampling = i32,
-        sample.size = i33,
-        
-        # Output
-        display.on.screen = TRUE,
-        write.pdf.file = TRUE,
-        write.jpg.file = TRUE,
-        write.png.file = TRUE,
-        write.svg.file = TRUE,
-        plot.options.reset = i24,
-        plot.custom.height = i25,
-        plot.custom.width = i26,
-        plot.font.size = i27,
-        plot.line.thickness = i28,
-        colors.on.graphs = i29,
-        titles.on.graphs = i30,
-        
-        # Undocumented but useful options
-        custom.graph.filename = i31
-      )
-      
-      progress$set(
-        value = 1.0,
-        detail = "Releasing console output"
-      )
-      
-      progress$close()
-      sink()
+      return(result)
     })
     
+  }
+  
+  # plot controller
+  output$stylo.plot <- renderPlot({
+    if (input$StyloRun == 0) {
+      return()
+    } else {
+      session$stylo
+    }
   })
+  
+  output$jobDone <- reactive(session$jobDone)
+  outputOptions(output, "jobDone", suspendWhenHidden = FALSE)
   
   observeEvent(
     eventExpr = input$StyloRun,
@@ -174,16 +201,24 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         disable_download(shiny.session)
         log.service$log(
           paste("Stylo version", packageVersion("stylo"),
-          "invoked with given parameters"),
+                "invoked with given parameters"),
           where = "stylo"
         )
-        output$stylo.plot <- renderPlot({
-          dat() %...>% {
-            enable_run_buttons(shiny.session)
-            enable_download(shiny.session)
-            .
-	  }
+        isolate({
+          session$stylo <- NULL
         })
+        session$jobDone <- FALSE
+        disable_run_buttons(shiny.session)
+        disable_download(shiny.session)
+        dat() %...>% {
+          enable_run_buttons(shiny.session)
+          enable_download(shiny.session)
+          isolate({
+            session$stylo <- .
+            session$jobDone <- TRUE
+          })
+          return(.)
+        }
       } else {
         showModal(modalDialog(
           title = "Error",
@@ -197,9 +232,6 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     }
   )
 
-  # plot controller
-  
-  
   # frequency table controller
   output$frequency.table <- renderTable({
     frequencies <- session$stylo$frequencies.0.culling
@@ -318,6 +350,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     )
   )
   
+  
   # plot file format selection controller
   observe({
     updateSelectInput(
@@ -348,9 +381,9 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     # check for change of value to be printed
     checkFunc = function() {
       if (length(stylo.output) > 0) {
-        rev(stylo.output)
+        TRUE
       } else {
-        ""
+        FALSE
       }
     },
     # This function returns the content of the log entry

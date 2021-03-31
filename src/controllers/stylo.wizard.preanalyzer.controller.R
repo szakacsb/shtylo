@@ -1,6 +1,8 @@
 function(input, output, session, db.service, saveSettings) {
   disable_run_buttons(session)
   disable_download(session)
+  sink(wizard.output.connection)
+  sink(wizard.output.connection, type = "message")
   progress <- AsyncProgress$new(
     message = "Wizard is running",
     min = 0,
@@ -187,6 +189,8 @@ function(input, output, session, db.service, saveSettings) {
       selected = "Wizard"
     )
     saveSettings(db.service, input)
+    sink()
+    sink(type = "message")
     enable_run_buttons(session)
     enable_download(session)
   }

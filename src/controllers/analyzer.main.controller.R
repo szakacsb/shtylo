@@ -1,5 +1,44 @@
 function (input, output, session, db.service, log.service, stylo.analyzer.params.service, saveSettings) {
   
+  # the stored console output
+  analyzer.output <- vector('character')
+  analyzer.output.connection <- textConnection(
+    object = "analyzer.output",
+    open = "a",
+    local = TRUE
+  )
+  
+  observeEvent(poll.analyzer.output(), {
+    entry <- poll.analyzer.output()
+    if (entry != "") {
+      log.service$log(
+        entry,
+        where = "analyzer"
+      )
+    }
+  })
+  
+  poll.analyzer.output <- reactivePoll(
+    intervalMillis = 1000, 
+    session = session,
+    # check for change of value to be printed
+    checkFunc = function() {
+      if (length(analyzer.output) > 0) {
+        TRUE
+      } else {
+        FALSE
+      }
+    },
+    # This function returns the content of the log entry
+    valueFunc = function() {
+      if (length(analyzer.output) > 0) {
+        rev(analyzer.output)
+      } else {
+        ""
+      }
+    }
+  )
+  
   observeEvent(
     
     eventExpr = input$AnalyzerRun,
@@ -15,6 +54,8 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
         )
         return()
       }
+      sink(analyzer.output.connection)
+      sink(analyzer.output.connection, type = "message")
       
       progress <- AsyncProgress$new(
         message = "Analyzer is running",
@@ -378,6 +419,8 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
           where = "analyzer"
         )
         saveSettings(db.service, input)
+        sink()
+        sink(type = "message")
         enable_run_buttons(session)
         enable_download(session)
       }

@@ -16,7 +16,7 @@ mainPanel(
       div(
         width = "100%",
         conditionalPanel(
-          condition = "input['StyloRun'] !== 0",
+          condition = "output.jobDone",
           selectInput(
             "output.plot.format.choices",
             "Plot file formats",
@@ -44,7 +44,7 @@ mainPanel(
       div(
         width = "100%",
         conditionalPanel(
-          condition = "input['StyloRun'] !== 0",
+          condition = "output.jobDone",
           downloadLink(
             "download.frequencies",
             label = "Download"
@@ -62,7 +62,7 @@ mainPanel(
       div(
         width = "100%",
         conditionalPanel(
-          condition = "input['StyloRun'] !== 0",
+          condition = "output.jobDone",
           downloadLink(
             "download.distances",
             label = "Download"
@@ -80,7 +80,7 @@ mainPanel(
       div(
         width = "100%",
         conditionalPanel(
-          condition = "input['StyloRun'] !== 0",
+          condition = "output.jobDone",
           downloadLink(
             "download.all.features",
             label = "Download"
@@ -98,7 +98,7 @@ mainPanel(
       div(
         width = "100%",
         conditionalPanel(
-          condition = "input['StyloRun'] !== 0",
+          condition = "output.jobDone",
           downloadLink(
             "download.used.features",
             label = "Download"
