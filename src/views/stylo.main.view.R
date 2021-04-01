@@ -5,7 +5,8 @@ mainPanel(
   tags$head(
     tags$style(
       type='text/css',
-      '#styloConsole {overflow-y:scroll; min-height: 200px; max-height: 200px;'
+      '#styloConsole {overflow-y:scroll; min-height: 200px; max-height: 200px; display: flex; flex-direction: column-reverse;}
+      #wizardConsole {overflow-y:scroll; min-height: 200px; max-height: 200px; display: flex; flex-direction: column-reverse;}'
     )
   ),
   tabsetPanel(
