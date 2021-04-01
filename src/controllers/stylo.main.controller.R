@@ -28,8 +28,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     corpus <- db.service$load.collection()
     #session$stylo <- NULL
     
-    sink(stylo.output.connection)
-    sink(stylo.output.connection, type = "message")
+    sink(stylo.output.connection, append = TRUE, type = "output")
+    sink(stylo.output.connection, append = TRUE, type = "message")
     
     i1 <- input$utf8.checkbox
     i2 <- input$language.select
@@ -160,22 +160,19 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
             # Undocumented but useful options
             custom.graph.filename = i31
           )
-          
-          progress$set(
-            value = 1.0,
-            detail = "Releasing console output"
-          )
-          
-          progress$close()
-          sink()
-          sink(type = "message")
         },
-        finally=function(){
-          progress$close()
-          sink()
-          sink(type = "message")
+	error = function(ex) {
+          log.service$log(
+            paste("Stylo failed.", ex),
+            where = "message"
+          )
+          # trace <- backtrace(proc_download)
+          # print(trace)
         }
       )
+      progress$close()
+      sink()
+      sink(type = "message")
       return(result)
     })
     
@@ -389,7 +386,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     # This function returns the content of the log entry
     valueFunc = function() {
       if (length(stylo.output) > 0) {
-        rev(stylo.output)
+        stylo.output
       } else {
         ""
       }
