@@ -32,7 +32,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     # This function returns the content of the log entry
     valueFunc = function() {
       if (length(wizard.output) > 0) {
-        rev(wizard.output)
+        wizard.output
       } else {
         ""
       }
