@@ -11,7 +11,7 @@ function (input, output, session) {
   )
   
   log <- function (msg, where) {
-    entry <- paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg, sep = " ")
+    entry <- utf8_encode(paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg, sep = " "), display=TRUE)
     if (where == "corpus") {
       console$corpus.log <- c(console$corpus.log, entry)
     } else if (where == "stylo"){
