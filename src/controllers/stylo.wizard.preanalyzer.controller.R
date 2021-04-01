@@ -1,4 +1,4 @@
-function(input, output, session, db.service, saveSettings) {
+function(input, output, session, db.service, saveSettings, wizard.output.connection) {
   disable_run_buttons(session)
   disable_download(session)
   sink(wizard.output.connection)
