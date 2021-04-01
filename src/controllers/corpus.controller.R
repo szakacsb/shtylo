@@ -9,6 +9,10 @@ function (input, output, session, log.service) {
           title = "Error",
           "Corpus name is already used. Choose a different name!"
         ))
+      log.service$log(
+        "Corpus name is already used. Choose a different name!",
+        where = "corpus"
+      )
       return()
     }
     disable_run_buttons(session)
