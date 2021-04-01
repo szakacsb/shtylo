@@ -4,15 +4,18 @@ function (input, output, session, log.service) {
     #session$corpus.ready <- TRUE
     i1 <- trimws(input$corpus.name)
     i2 <- trimws(input$corpus.url)
+    if (i1 == "" || i2 == "") {
+      showModal(modalDialog(
+          title = "Error",
+          "Enter the corpus location and its name!"
+        ))
+      return()
+    }
     if (corpus_exists(i1)) {
       showModal(modalDialog(
           title = "Error",
           "Corpus name is already used. Choose a different name!"
         ))
-      log.service$log(
-        "Corpus name is already used. Choose a different name!",
-        where = "corpus"
-      )
       return()
     }
     disable_run_buttons(session)

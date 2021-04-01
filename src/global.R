@@ -8,6 +8,8 @@ library(rjson)
 library(promises)
 library(future)
 library(ipc)
+library(utf8)
+library(textutils)
 plan(multiprocess)
 
 shtylo.properties <- read.properties("./.shiny_app.conf")

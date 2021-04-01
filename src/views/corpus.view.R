@@ -4,8 +4,9 @@ corpus.main.view <- mainPanel(
   tags$head(
     tags$style(
       type='text/css', 
-      '#corpusConsole {overflow-y:scroll; min-height: 350px; max-height: 350px; display: flex; flex-direction: column-reverse;}'
+      '#corpusConsole {overflow-y:scroll; min-height: 350px; max-height: 350px;}'
     )
+      # display: flex; flex-direction: column-reverse;
   ),
   div(
     h5(
