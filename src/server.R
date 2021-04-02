@@ -7,11 +7,11 @@ corpus.controller <- dget("./controllers/corpus.controller.R")
 stylo.main.controller <- dget("./controllers/stylo.main.controller.R")
 stylo.wizard.preanalyzer <- dget("./controllers/stylo.wizard.preanalyzer.controller.R")
 stylo.wizard.update <- dget("./controllers/stylo.wizard.update.R")
-stylo.wizard.saveSettings <- dget("./controllers/stylo.wizard.save.R")
+stylo.wizard.saveSettings <<- dget("./controllers/stylo.wizard.save.R")
 stylo.wizard.loadSettings <- dget("./controllers/stylo.wizard.load.R")
-stylo.saveSettings <- dget("./controllers/stylo.save.R")
+stylo.saveSettings <<- dget("./controllers/stylo.save.R")
 stylo.loadSettings <- dget("./controllers/stylo.load.R")
-stylo.analyzer.saveSettings <- dget("./controllers/stylo.analyzer.save.R")
+stylo.analyzer.saveSettings <<- dget("./controllers/stylo.analyzer.save.R")
 stylo.analyzer.loadSettings <- dget("./controllers/stylo.analyzer.load.R")
 
 # Define server logic required to draw a histogram
@@ -19,8 +19,8 @@ shinyServer(function(input, output, session) {
   
   # initialize logging
   log.service <- log.controller(input, output, session)
-  #initialize database
-  corpus.service <- corpus.controller(input, output, session, log.service)
+  #initialize database to a global shared variable
+  corpus.service <<- corpus.controller(input, output, session, log.service)
   
   # initialize the sidebar
   stylo.params.service <- stylo.sidebar.controller(

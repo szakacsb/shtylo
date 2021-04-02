@@ -9,7 +9,7 @@ library(promises)
 library(future)
 library(ipc)
 library(utf8)
-library(textutils)
+#library(textutils)
 plan(multiprocess)
 
 shtylo.properties <- read.properties("./.shiny_app.conf")
@@ -42,17 +42,4 @@ disable_download <- function(session) {
 }
 enable_download <- function(session) {
   updateButton(session, "CorpusDownload", disabled = FALSE)
-}
-get_corpus_path <- function(session, corpus_name) {
-  # TODO use a user-specific directory
-  p = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
-  if (!dir.exists(p)) {
-    dir.create(p, recursive = TRUE)
-  }
-  p
-}
-# Avoid corpus name collisions until we have user-specific directory names
-corpus_exists <- function(corpus_name) {
-  p = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
-  dir.exists(p)
 }

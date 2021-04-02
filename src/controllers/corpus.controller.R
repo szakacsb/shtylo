@@ -11,16 +11,15 @@ function (input, output, session, log.service) {
         ))
       return()
     }
-    if (corpus_exists(i1)) {
+    if (corpus.exists(i1)) {
       showModal(modalDialog(
-          title = "Error",
-          "Corpus name is already used. Choose a different name!"
+          title = "Warning",
+          "This corpus already exists and it will be loaded. Choose a different name if you would like to upload a new corpus."
         ))
-      return()
     }
     disable_run_buttons(session)
     disable_download(session)
-    setwd(get_corpus_path(session, i1))
+    setwd(get.corpus.path(i1))
     progress <- AsyncProgress$new(
       message = "Downloading corpus",
       min = 0,
@@ -33,8 +32,8 @@ function (input, output, session, log.service) {
       value = 0.2,
       detail = "Downloading .zip file"
     )
-    proc_download <- future({
-      setwd(get_corpus_path(session, i1))
+    if (!corpus.exists(i1)) proc_download <- future({
+      setwd(get.corpus.path(i1))
       download.file(i2, paste(i1, ".zip", sep = ""), "curl", extra="--insecure")
       if (file.info(paste(i1, ".zip", sep = ""))$size < 100) {
 	stop("File download failed. Check the URL.")
@@ -50,11 +49,19 @@ function (input, output, session, log.service) {
       }
     })
     tryCatch({
-        value(proc_download)
-        log.service$log(
-          "Succesfully downloaded the corpus.",
-          where = "corpus"
-        )
+        if (!corpus.exists(i1)) {
+          value(proc_download)
+          log.service$log(
+            "Succesfully downloaded the corpus.",
+            where = "corpus"
+          )
+          init.config.files(input)
+	} else {
+          log.service$log(
+            "Loading already existing corpus.",
+            where = "corpus"
+          )
+	}
         enable_run_buttons(session)
       },
       error = function(ex) {
@@ -88,7 +95,32 @@ function (input, output, session, log.service) {
   is.connected <- function () {
     return(file.exists("./corpus"))
   }
-  
+
+  corpus.exists <- function(corpus_name) {
+    d = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
+    if (!dir.exists(d)) {
+      return(FALSE)
+    }
+    # check if the corpus is properly inicialized
+    f = normalizePath(paste(d, 'stylo.conf', sep="/"), winslash = "\\")
+    file.exists(f)
+  }
+
+  get.corpus.path <- function(corpus_name) {
+    # TODO use a user-specific directory
+    p = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
+    if (!dir.exists(p)) {
+      dir.create(p, recursive = TRUE)
+    }
+    p
+  }
+
+  init.config.files <- function (input) {
+    stylo.wizard.saveSettings(corpus.service, input)
+    stylo.saveSettings(corpus.service, input)
+    stylo.analyzer.saveSettings(corpus.service, input)
+  }
+
   export <- list(load.collection, is.connected, load.save, upload.save)
   names(export) <- c("load.collection", "is.connected", "load.save", "upload.save")
   export
