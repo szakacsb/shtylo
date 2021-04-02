@@ -19,7 +19,7 @@ shinyServer(function(input, output, session) {
   
   # initialize logging
   log.service <- log.controller(input, output, session)
-  #initialize database to a global shared variable
+  #initialize database to a global shared variable - this might not be a good idea TODO
   corpus.service <<- corpus.controller(input, output, session, log.service)
   
   # initialize the sidebar
