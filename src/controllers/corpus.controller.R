@@ -11,15 +11,20 @@ function (input, output, session, log.service) {
         ))
       return()
     }
+    setwd(get.corpus.path(i1))
     if (corpus.exists(i1)) {
-      showModal(modalDialog(
-          title = "Warning",
-          "This corpus already exists and it will be loaded. Choose a different name if you would like to upload a new corpus."
+      cconf <- load.save('corpus')
+      if (cconf['url'] != i2) {
+        showModal(modalDialog(
+          title = "Error",
+          "A different corpus already exists with the same name. Choose a different name!"
         ))
+        return()
+      }
+      # If the name and the URL is the same, load the existing corpus
     }
     disable_run_buttons(session)
     disable_download(session)
-    setwd(get.corpus.path(i1))
     progress <- AsyncProgress$new(
       message = "Downloading corpus",
       min = 0,
@@ -59,7 +64,7 @@ function (input, output, session, log.service) {
           upload.save(list(name = i1, url = i2), 'corpus')
 	} else {
           log.service$log(
-            "Loading already existing corpus.",
+            "Loading already existing corpus. Choose a different corpus name if you would like to create a new corpus.",
             where = "corpus"
           )
 	}
