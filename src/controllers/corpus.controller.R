@@ -80,7 +80,18 @@ function (input, output, session, log.service) {
 
   load.collection <- function () {
     filelist <- list.files("./corpus")
+    write(paste("Loading", length(filelist), "file(s)..."), stdout())
     load.corpus(files=filelist, corpus.dir = "./corpus")
+  }
+
+  detect.languages <- function () {
+    filelist <- list.files("./corpus")
+    # TODO check all files and return the best guess
+    detect_language_mixed(read_file(paste("./corpus", filelist[[1]], sep = "/")), size = 1)
+    #f <- function(fname) {
+      #detect_language_mixed(read_file(paste("./corpus", fname, sep = "/")), size = 1)
+    #}
+    #sort(names(lapply(filelist, f)), decreasing = TRUE)
   }
   
   load.save <- function (type) {
@@ -120,7 +131,7 @@ function (input, output, session, log.service) {
     stylo.analyzer.saveSettings(corpus.service, input)
   }
 
-  export <- list(load.collection, is.connected, load.save, upload.save)
-  names(export) <- c("load.collection", "is.connected", "load.save", "upload.save")
+  export <- list(load.collection, is.connected, load.save, upload.save, detect.languages)
+  names(export) <- c("load.collection", "is.connected", "load.save", "upload.save", "detect.languages")
   export
 }

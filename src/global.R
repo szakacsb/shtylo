@@ -10,6 +10,7 @@ library(future)
 library(ipc)
 library(utf8)
 library(yaml)
+library(cld3)
 #library(textutils)
 plan(multiprocess)
 

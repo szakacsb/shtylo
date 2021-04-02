@@ -2,7 +2,7 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
   disable_run_buttons(session)
   disable_download(session)
   sink(wizard.output.connection)
-  sink(wizard.output.connection, type = "message")
+  #sink(wizard.output.connection, type = "message")
   progress <- AsyncProgress$new(
     message = "Wizard is running",
     min = 0,
@@ -13,6 +13,25 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
   )
   future({
     corpus <- isolate(db.service$load.collection())
+    # summary(corpus) has problems with non-utf8 file names
+    progress$set(
+      value = 0.3,
+      detail = "Detecting language"
+    )
+    #languages = db.service$detect.languages()
+    #write(languages, stdout())
+    #write(table(languages), stdout())
+    #write(names(table(languages)), stdout())
+    #lang = as.vector(names(table(languages)))[[1]]
+    lang = db.service$detect.languages()
+    # TODO support other languages
+    if (lang == 'hu') {
+      corpus.lang = "hungarian"
+    } else {
+      corpus.lang = "English"
+    }
+    write(paste("Detected language is ", toupper(substr(corpus.lang, 1, 1)), substr(corpus.lang, 2, nchar(corpus.lang)), sep = ""), stdout())
+
     progress$set(
       value = 0.5,
       detail = "corpus preprocessing"
@@ -105,7 +124,7 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
       }
     }
     progress$close()
-    c(corpus_len, mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), round(sum(frequencyList2)/10), mfwmin_)
+    c(corpus_len, mean(lengths_), isVariedLength, isVariedDistance, feat_, ngramsize_, culling_, length(frequencyList), round(sum(frequencyList2)/10), mfwmin_, corpus.lang)
   }) %...>% {
     corpus_len <- strtoi(.[[1]])
     mean <- strtoi(.[[2]])
@@ -173,6 +192,8 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
       )
     }
     
+    updateSelectInput(session, "wizardLanguageSelect",
+                      selected = .[[11]])
     updateSelectInput(
       session,
       "wizardDistancesSelect",
@@ -190,7 +211,7 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
     )
     saveSettings(db.service, input)
     sink()
-    sink(type = "message")
+    #sink(type = "message")
     enable_run_buttons(session)
     enable_download(session)
   }
