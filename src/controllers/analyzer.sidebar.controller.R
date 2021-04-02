@@ -68,8 +68,19 @@ function (input, output, session, db.service, log.service, saveSettings, loadSet
     eventExpr = input$analyzer.load.text, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        write_file(serialize(fromJSON(input$analyzer.load.textbox), NULL), "analyzer.conf")
-        loadSettings(db.service, session, "analyzer")
+        tryCatch({
+            read_yaml(text = input$analyzer.load.textbox)
+            write_file(input$analyzer.load.textbox, "analyzer.conf")
+            loadSettings(db.service, session, "analyzer")
+	  },
+	  error = function(ex) {
+            showModal(modalDialog(
+              title = "Error",
+              "Invalid configuration."
+            ))
+	    return()
+	  }
+        )
       } else {
         showModal(modalDialog(
           title = "Error",
@@ -86,12 +97,10 @@ function (input, output, session, db.service, log.service, saveSettings, loadSet
     handlerExpr = {
       if (db.service$is.connected()) {
         saveSettings(db.service, input)
-        y <- read_file_raw("analyzer.conf")
-        conffile <- unserialize(connection = y)
         updateTextAreaInput(
           session,
           "analyzer.load.textbox",
-          value = toJSON(conffile)
+          value = read_file("analyzer.conf")
         )
       } else {
         showModal(modalDialog(

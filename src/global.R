@@ -9,6 +9,7 @@ library(promises)
 library(future)
 library(ipc)
 library(utf8)
+library(yaml)
 #library(textutils)
 plan(multiprocess)
 

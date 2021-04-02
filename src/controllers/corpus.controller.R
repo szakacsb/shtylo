@@ -56,6 +56,7 @@ function (input, output, session, log.service) {
             where = "corpus"
           )
           init.config.files(input)
+          upload.save(list(name = i1, url = i2), 'corpus')
 	} else {
           log.service$log(
             "Loading already existing corpus.",
@@ -83,13 +84,11 @@ function (input, output, session, log.service) {
   }
   
   load.save <- function (type) {
-    y <- read_file_raw(paste(type, ".conf", sep = ""))
-    conffile <- unserialize(connection = y)
-    conffile
+    read_yaml(paste(type, ".conf", sep = ""))
   }
   
   upload.save <- function (x, type) {
-    write_file(serialize(x, NULL), paste(type, ".conf", sep = ""))
+    write_yaml(x, paste(type, ".conf", sep = ""))
   }
   
   is.connected <- function () {

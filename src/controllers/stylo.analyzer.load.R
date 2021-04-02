@@ -1,5 +1,5 @@
 function(db.service, session, type){
-  saveVector <- db.service$load.save(type)
+  saveVector <- unlist(db.service$load.save(type), recursive = FALSE, use.names = FALSE)
   
   updateSelectInput(
     session,
