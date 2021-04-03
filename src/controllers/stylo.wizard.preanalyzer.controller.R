@@ -25,7 +25,7 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
     #lang = as.vector(names(table(languages)))[[1]]
     lang = db.service$detect.languages()
     # TODO support other languages
-    if (lang == 'hu') {
+    if (lang[[1]] == 'hu') {
       corpus.lang = "hungarian"
     } else {
       corpus.lang = "English"
