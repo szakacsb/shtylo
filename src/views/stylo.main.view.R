@@ -5,7 +5,7 @@ mainPanel(
   tags$head(
     tags$style(
       type='text/css',
-      '#styloConsole {overflow-y:scroll; min-height: 350px; max-height: 350px; display: flex; flex-direction: column-reverse;}
+      '#styloConsole {overflow-y:scroll; min-height: 420px; max-height: 420px; display: flex; flex-direction: column-reverse;}
       #wizardConsole {overflow-y:scroll; min-height: 350px; max-height: 350px;}'
     )
   ),
@@ -13,28 +13,38 @@ mainPanel(
     type = "tabs",
     id = "stylo.result.panel",
     tabPanel(
-      "Plot",
+      "Result Plot",
       div(
         width = "100%",
         conditionalPanel(
           condition = "output.jobDone",
-          selectInput(
-            "output.plot.format.choices",
-            "Plot file formats",
-            choices = NULL,
-            selected = NULL,
-            multiple = FALSE,
-            width = NULL
+          downloadButton(
+            "download.plot.pdf",
+            label = "  PDF",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
           ),
-          downloadLink(
-            "download.plot",
-            label = "Download"
+          downloadButton(
+            "download.plot.png",
+            label = "  PNG",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
+          ),
+          downloadButton(
+            "download.plot.svg",
+            label = "  SVG",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
+          ),
+          htmlOutput(
+            'download.plot.msg',
+            inline = TRUE,
           )
         ),
         div(
           width = "100%",
-          style = "overflow-y:scroll; max-height: 550px",
-          imageOutput(
+          style = "overflow-y:scroll; max-height: 100%;",
+          uiOutput(
             "stylo.plot"
           )
         )
@@ -46,9 +56,11 @@ mainPanel(
         width = "100%",
         conditionalPanel(
           condition = "output.jobDone",
-          downloadLink(
+          downloadButton(
             "download.frequencies",
-            label = "Download"
+            label = "  Frequency Table CSV",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
           )
         ),
         div(
@@ -64,9 +76,11 @@ mainPanel(
         width = "100%",
         conditionalPanel(
           condition = "output.jobDone",
-          downloadLink(
+          downloadButton(
             "download.distances",
-            label = "Download"
+            label = "  Distances CSV",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
           )
         ),
         div(
@@ -82,9 +96,11 @@ mainPanel(
         width = "100%",
         conditionalPanel(
           condition = "output.jobDone",
-          downloadLink(
+          downloadButton(
             "download.all.features",
-            label = "Download"
+            label = "  All Features CSV",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
           )
         ),
         div(
@@ -100,9 +116,11 @@ mainPanel(
         width = "100%",
         conditionalPanel(
           condition = "output.jobDone",
-          downloadLink(
+          downloadButton(
             "download.used.features",
-            label = "Download"
+            label = "  Used Features CSV",
+	    class = "btn-sm",
+	    icon = icon(name = "download", lib = "font-awesome")
           )
         ),
         div(
