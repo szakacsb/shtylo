@@ -11,8 +11,8 @@ function (input, output, session, log.service) {
         ))
       return()
     }
-    setwd(get.corpus.path(i1))
     if (corpus.exists(i1)) {
+      setwd(get.corpus.path(i1))
       cconf <- load.save('corpus')
       if (cconf['url'] != i2) {
         showModal(modalDialog(
@@ -38,7 +38,7 @@ function (input, output, session, log.service) {
       detail = "Downloading .zip file"
     )
     if (!corpus.exists(i1)) proc_download <- future({
-      setwd(get.corpus.path(i1))
+      setwd(create.corpus.path(i1))
       download.file(i2, paste(i1, ".zip", sep = ""), "curl", extra="--insecure")
       if (file.info(paste(i1, ".zip", sep = ""))$size < 100) {
 	stop("File download failed. Check the URL.")
@@ -112,18 +112,23 @@ function (input, output, session, log.service) {
   }
 
   corpus.exists <- function(corpus_name) {
-    d = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
-    if (!dir.exists(d)) {
+    # d = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
+    p = get.corpus.path(corpus_name)
+    if (!dir.exists(p)) {
       return(FALSE)
     }
     # check if the corpus is properly inicialized
-    f = normalizePath(paste(d, 'stylo.conf', sep="/"), winslash = "\\")
-    file.exists(f)
+    file.exists(paste(p, 'corpus.conf', sep="/"))
   }
 
   get.corpus.path <- function(corpus_name) {
     # TODO use a user-specific directory
-    p = normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
+    # normalizePath(paste(wd, format(Sys.time(), "%F"), corpus_name, sep="/"), winslash = "\\")
+    normalizePath(paste(wd, corpus_name, sep="/"), winslash = "\\")
+  }
+
+  create.corpus.path <- function(corpus_name) {
+    p = get.corpus.path(corpus_name)
     if (!dir.exists(p)) {
       dir.create(p, recursive = TRUE)
     }
