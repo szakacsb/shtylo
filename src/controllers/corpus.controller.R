@@ -17,7 +17,7 @@ function (input, output, session, log.service) {
       if (cconf['url'] != i2) {
         showModal(modalDialog(
           title = "Error",
-          "A different corpus already exists with the same name. Choose a different name!"
+          "A different corpus with the same name already exists. Choose a different name!"
         ))
         return()
       }
@@ -56,6 +56,7 @@ function (input, output, session, log.service) {
     tryCatch({
         if (!corpus.exists(i1)) {
           value(proc_download)
+          setwd(get.corpus.path(i1))
           log.service$log(
             "Succesfully downloaded the corpus.",
             where = "corpus"
@@ -67,14 +68,16 @@ function (input, output, session, log.service) {
             "Loading already existing corpus. Choose a different corpus name if you would like to create a new corpus.",
             where = "corpus"
           )
+	  # TODO load settings?
 	}
         enable_run_buttons(session)
       },
       error = function(ex) {
         log.service$log(
-          paste("Downloading and extracting failed.", ex),
+          paste("Downloading and extracting failed.", trimws(ex)),
           where = "corpus"
         )
+        unlink(get.corpus.path(i1), recursive = TRUE, force = TRUE)
         # trace <- backtrace(proc_download)
         # print(trace)
       }
@@ -85,7 +88,6 @@ function (input, output, session, log.service) {
 
   load.collection <- function () {
     filelist <- list.files("./corpus")
-    write(paste("Loading", length(filelist), "file(s)..."), stdout())
     load.corpus(files=filelist, corpus.dir = "./corpus")
   }
 
