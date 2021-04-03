@@ -792,15 +792,18 @@ div(
         "WizardRun",
         label = "Run Wizard",
 	type = "action",
+	icon = icon(name = "magic", lib = "font-awesome"),
 	disabled = TRUE
       ),
       actionButton(
         "wizard.previous",
-        label = "Previous"
+        label = "",
+	icon = icon(name = "backward", lib = "font-awesome")
       ),
       actionButton(
         "wizard.next",
-        label = "Next"
+        label = "",
+	icon = icon(name = "forward", lib = "font-awesome")
       )
   ),
   fluidRow(
