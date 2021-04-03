@@ -11,7 +11,7 @@ library(ipc)
 library(utf8)
 library(yaml)
 library(cld3)
-#library(textutils)
+library(base64enc)
 plan(multiprocess)
 
 shtylo.properties <- read.properties("./.shiny_app.conf")
