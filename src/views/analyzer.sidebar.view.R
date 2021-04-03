@@ -392,10 +392,12 @@ sidebarPanel(
       wellPanel(
         actionButton(
           "analyzer.save",
+          class = "btn-sm",
           label = "Save Settings"
         ),
         actionButton(
           "analyzer.load",
+          class = "btn-sm",
           label = "Load Settings"
         )
       ),
@@ -408,20 +410,24 @@ sidebarPanel(
         ),
         actionButton(
           "analyzer.load.text",
+          class = "btn-sm",
           label = "Load from text"
         ),
         actionButton(
           "analyzer.export.text",
+          class = "btn-sm",
           label = "Save to text"
         )
       ),
       wellPanel(
         actionButton(
           "analyzer.load.stylo",
+          class = "btn-sm",
           label = "Load from Stylo"
         ),
         actionButton(
           "analyzer.load.wizard",
+          class = "btn-sm",
           label = "Load from Wizard"
         )
       )
