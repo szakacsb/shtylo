@@ -97,7 +97,7 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
             detail = "Invoking Stylo"
           )
           
-	  setwd('results')
+          setwd('results')
           stylo_result <- stylo(
             
             # Invoke without GUI with predefined corpus
@@ -162,18 +162,18 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
             # Undocumented but useful options
             custom.graph.filename = i31
           )
-	  setwd("..")
+          setwd("..")
 
-	  # write(summary(stylo_result), stdout())
-	  status = TRUE
+          # write(summary(stylo_result), stdout())
+          status = TRUE
         },
-	error = function(ex) {
+        error = function(ex) {
           log.service$log(
             paste("Stylo failed.", trimws(ex)),
             where = "message"
           )
-	  status = FALSE
-	  setwd("..")
+          status = FALSE
+          setwd("..")
           # trace <- backtrace(proc_download)
           # print(trace)
         }
@@ -195,11 +195,11 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
       if (db.service$is.connected()) {
         disable_run_buttons(shiny.session)
         disable_download(shiny.session)
-	if (dir.exists('results')) {
+        if (dir.exists('results')) {
           log.service$log("Clearing old result files", where = "stylo")
           unlink('results', recursive = TRUE, force = TRUE)
         }
-	dir.create('results')
+        dir.create('results')
         log.service$log(
           paste("Stylo version", packageVersion("stylo"),
                 "invoked with given parameters"),
@@ -209,22 +209,22 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         session$jobDone <- FALSE
         disable_run_buttons(shiny.session)
         disable_download(shiny.session)
-	# clear the image
+        # clear the image
         output$stylo.plot <- renderText({""})
         dat() %...>% {
           enable_run_buttons(shiny.session)
           enable_download(shiny.session)
-	  if (as.logical(.[[1]])) {
+          if (as.logical(.[[1]])) {
           #isolate({
             session$stylo <- .[[2]]
-	    output$stylo.plot <- renderUI({
+            output$stylo.plot <- renderUI({
               src = paste("data:image/png;base64,", base64encode(paste('results/', custom.graph.file.prefix, "_001.png", sep = "")))
-	      tags$img(src = src, alt = "Stylo results", width="100%")
-	    })
+              tags$img(src = src, alt = "Stylo results", width="100%")
+            })
             session$jobDone <- TRUE
           #})
           #return(.)
-	  }
+          }
         }
       } else {
         showModal(modalDialog(
