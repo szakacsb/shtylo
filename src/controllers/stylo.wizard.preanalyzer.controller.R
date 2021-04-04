@@ -210,6 +210,7 @@ function(input, output, session, db.service, saveSettings, wizard.output.connect
       selected = "Wizard"
     )
     saveSettings(db.service, input)
+    write("Wizard is finished. Please review then save the suggested parameter settings.", stdout())
     sink()
     #sink(type = "message")
     enable_run_buttons(session)

@@ -71,6 +71,10 @@ function (input, output, session, log.service) {
 	  # TODO load settings?
 	}
         enable_run_buttons(session)
+        log.service$log(
+          "Wizard, Stylo and Analyzer are enabled.",
+          where = "corpus"
+        )
       },
       error = function(ex) {
         log.service$log(
