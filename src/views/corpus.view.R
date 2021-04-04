@@ -4,7 +4,7 @@ corpus.main.view <- mainPanel(
   tags$head(
     tags$style(
       type='text/css', 
-      '#corpusConsole {overflow-y:scroll; min-height: 350px; max-height: 350px;}'
+      '#corpusConsole {overflow-y:scroll; min-height: 310px; max-height: 310px;}'
     )
       # display: flex; flex-direction: column-reverse;
   ),
@@ -32,6 +32,7 @@ corpus.config.view <- sidebarPanel(
 fluidRow(
   column(
     4, # width out of 12
+    h5('Corpus details'),
     corpus.config.view
   ),
   column(

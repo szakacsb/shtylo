@@ -40,20 +40,6 @@ fluidPage(
       title = "Analyzer",
       icon = icon(name = "spinner", lib = "font-awesome"),
       analyzer.view
-    ),
-    navbarMenu(
-      title = "More",
-      icon = icon(name = "info", lib = "font-awesome"),
-      tabPanel(
-        title = "About Shtylo",
-        value = "about-shtylo",
-        icon = icon(name = "html5", lib = "font-awesome")
-      ),
-      tabPanel(
-        title = "About Stylo",
-        value = "about-stylo",
-        icon = icon(name = "paint-brush", lib = "font-awesome")
-      )
     )
   )
 )
