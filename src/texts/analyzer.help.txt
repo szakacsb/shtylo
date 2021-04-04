@@ -1,1 +1,1 @@
-The analyzer does an initial analysis on thecorpus and tries to guess the optimal settings. It is a long process.
+The analyzer does an initial analysis on the corpus then it tries to optimize the parameters to achieve a better result. It is a long-running process.
