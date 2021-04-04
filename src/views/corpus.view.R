@@ -4,8 +4,9 @@ corpus.main.view <- mainPanel(
   tags$head(
     tags$style(
       type='text/css', 
-      '#corpusConsole {overflow-y:scroll; min-height: 350px; max-height: 350px;'
+      '#corpusConsole {overflow-y:scroll; min-height: 310px; max-height: 310px;}'
     )
+      # display: flex; flex-direction: column-reverse;
   ),
   div(
     h5(
@@ -23,7 +24,7 @@ corpus.config.view <- sidebarPanel(
   wellPanel(
     textInput("corpus.url", "Corpus URL (zip file)", value = "", width = "100%", placeholder = "https://.../corpus.zip"),
     textInput("corpus.name", "Corpus Name", value = "", width = "100%", placeholder = "my_corpus"),
-    bsButton("CorpusDownload", label = "Download", type = "action", icon = icon(name = "plug", lib = "font-awesome"))
+    bsButton("CorpusDownload", label = "Load Corpus", type = "action", icon = icon(name = "download", lib = "font-awesome"))
   )
 )
 
@@ -31,6 +32,7 @@ corpus.config.view <- sidebarPanel(
 fluidRow(
   column(
     4, # width out of 12
+    h5('Corpus details'),
     corpus.config.view
   ),
   column(

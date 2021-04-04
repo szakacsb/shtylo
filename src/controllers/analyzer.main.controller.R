@@ -7,7 +7,8 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
     open = "a",
     local = TRUE
   )
-  
+
+  # TODO ez szerintem nem nagyon megy a future belsejéből
   observeEvent(poll.analyzer.output(), {
     entry <- poll.analyzer.output()
     if (entry != "") {
@@ -55,7 +56,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
         return()
       }
       sink(analyzer.output.connection)
-      sink(analyzer.output.connection, type = "message")
+      # sink(analyzer.output.connection, type = "message")
       
       progress <- AsyncProgress$new(
         message = "Analyzer is running",
@@ -65,7 +66,7 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
         style = "notification",
         session = session
       )
-      corpus <- db.service$load.collection()
+      corpus <- isolate(db.service$load.collection())
       
       i1 <- input$analyzerUtf8Checkbox
       i2 <- input$analyzerLanguageSelect
@@ -414,13 +415,10 @@ function (input, output, session, db.service, log.service, stylo.analyzer.params
                             "Cosine" = "dist.cosine"
                           ), selected = distanceSelect(.[[5]])
         )
-        log.service$log(
-          "Analyzer invoked",
-          where = "analyzer"
-        )
         saveSettings(db.service, input)
+        write("Analyzer is finished. Please review then save the suggested parameter settings.", stdout())
         sink()
-        sink(type = "message")
+        # sink(type = "message")
         enable_run_buttons(session)
         enable_download(session)
       }

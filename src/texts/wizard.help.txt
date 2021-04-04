@@ -1,1 +1,1 @@
-The wizard offers tooltips and limited analyzing functionality for less experienced users.
+The wizard offers tooltips and helps in setting initial analysis parameters using various heuristic functions.

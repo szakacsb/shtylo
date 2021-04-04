@@ -32,7 +32,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     # This function returns the content of the log entry
     valueFunc = function() {
       if (length(wizard.output) > 0) {
-        rev(wizard.output)
+        wizard.output
       } else {
         ""
       }
@@ -43,7 +43,7 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     eventExpr = input$WizardRun,
     handlerExpr = {
       if (db.service$is.connected()) {
-        preanalyzer(input, output, session, db.service, saveSettings)
+        preanalyzer(input, output, session, db.service, saveSettings, wizard.output.connection)
         log.service$log(
           "Wizard invoked...",
           where = "wizard"
@@ -153,8 +153,19 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     eventExpr = input$wizard.load.text, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        write_file(serialize(fromJSON(input$wizard.load.textbox), NULL), "wizard.conf")
-        loadSettings(db.service, session, "wizard")
+        tryCatch({
+            read_yaml(text = input$wizard.load.textbox)
+            write_file(input$wizard.load.textbox, "wizard.conf")
+            loadSettings(db.service, session, "wizard")
+	  },
+	  error = function(ex) {
+            showModal(modalDialog(
+              title = "Error",
+              "Invalid configuration."
+            ))
+	    return()
+	  }
+        )
       } else {
         showModal(modalDialog(
           title = "Error",
@@ -171,12 +182,10 @@ function (input, output, session, db.service, log.service, preanalyzer, updater,
     handlerExpr = {
       if (db.service$is.connected()) {
         saveSettings(db.service, input)
-        y <- read_file_raw("wizard.conf")
-        conffile <- unserialize(connection = y)
         updateTextAreaInput(
           session,
           "wizard.load.textbox",
-          value = toJSON(conffile)
+          value = read_file("wizard.conf")
         )
       } else {
         showModal(modalDialog(

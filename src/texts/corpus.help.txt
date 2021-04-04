@@ -1,2 +1,2 @@
 Assemble your corpus into a directory called "corpus" and compress it to a ZIP file.
-Then upload this file to a Web Store, and get the URL to the uploaded file.
+Then upload this file to a Web file store, and get the URL to the uploaded file.

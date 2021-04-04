@@ -25,11 +25,11 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
       session = shiny.session
     )
     
-    corpus <- db.service$load.collection()
+    corpus <- isolate(db.service$load.collection())
     #session$stylo <- NULL
     
-    sink(stylo.output.connection)
-    sink(stylo.output.connection, type = "message")
+    sink(stylo.output.connection, append = TRUE, type = "output")
+    sink(stylo.output.connection, append = TRUE, type = "message")
     
     i1 <- input$utf8.checkbox
     i2 <- input$language.select
@@ -66,7 +66,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     i33 <- input$sampling.input
     
     future({
-      result <- NULL
+      status <- FALSE
+      stylo_result <- NULL
       tryCatch(
         {
           progress$set(
@@ -96,7 +97,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
             detail = "Invoking Stylo"
           )
           
-          result <- stylo(
+          setwd('results')
+          stylo_result <- stylo(
             
             # Invoke without GUI with predefined corpus
             gui = FALSE,
@@ -160,36 +162,30 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
             # Undocumented but useful options
             custom.graph.filename = i31
           )
-          
-          progress$set(
-            value = 1.0,
-            detail = "Releasing console output"
-          )
-          
-          progress$close()
-          sink()
-          sink(type = "message")
+          setwd("..")
+
+          # write(summary(stylo_result), stdout())
+          status = TRUE
         },
-        finally=function(){
-          progress$close()
-          sink()
-          sink(type = "message")
+        error = function(ex) {
+          log.service$log(
+            paste("Stylo failed.", trimws(ex)),
+            where = "message"
+          )
+          status = FALSE
+          setwd("..")
+          # trace <- backtrace(proc_download)
+          # print(trace)
         }
       )
-      return(result)
+      progress$close()
+      sink()
+      sink(type = "message")
+      list(status, stylo_result)
     })
     
   }
-  
-  # plot controller
-  output$stylo.plot <- renderPlot({
-    if (input$StyloRun == 0) {
-      return()
-    } else {
-      session$stylo
-    }
-  })
-  
+
   output$jobDone <- reactive(session$jobDone)
   outputOptions(output, "jobDone", suspendWhenHidden = FALSE)
   
@@ -199,25 +195,36 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
       if (db.service$is.connected()) {
         disable_run_buttons(shiny.session)
         disable_download(shiny.session)
+        if (dir.exists('results')) {
+          log.service$log("Clearing old result files", where = "stylo")
+          unlink('results', recursive = TRUE, force = TRUE)
+        }
+        dir.create('results')
         log.service$log(
           paste("Stylo version", packageVersion("stylo"),
                 "invoked with given parameters"),
           where = "stylo"
         )
-        isolate({
-          session$stylo <- NULL
-        })
+        session$stylo <- NULL
         session$jobDone <- FALSE
         disable_run_buttons(shiny.session)
         disable_download(shiny.session)
+        # clear the image
+        output$stylo.plot <- renderText({""})
         dat() %...>% {
           enable_run_buttons(shiny.session)
           enable_download(shiny.session)
-          isolate({
-            session$stylo <- .
+          if (as.logical(.[[1]])) {
+          #isolate({
+            session$stylo <- .[[2]]
+            output$stylo.plot <- renderUI({
+              src = paste("data:image/png;base64,", base64encode(paste('results/', custom.graph.file.prefix, "_001.png", sep = "")))
+              tags$img(src = src, alt = "Stylo results", width="100%")
+            })
             session$jobDone <- TRUE
-          })
-          return(.)
+          #})
+          #return(.)
+          }
         }
       } else {
         showModal(modalDialog(
@@ -245,10 +252,10 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   
   # all features table controller
   output$all.features.table <- renderText({
-    features <- session$stylo$features
     if (is.null(session$stylo)) {
       return(NULL)
     }
+    features <- session$stylo$features
     result <- strsplit(x = features, split = " ")
     session$features <- paste(result, collapse = "\n")
     session$features
@@ -276,6 +283,15 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
   },
   include.rownames = TRUE)
   
+  # Plot msg
+  output$download.plot.msg <- renderText({
+    resfile = paste('results/', custom.graph.file.prefix, "_001.png", sep = "")
+    if (is.null(session$stylo) || !file.exists(resfile)) {
+      return()
+    }
+    paste("Results were created at", file.info(resfile)$ctime)
+  })
+
   # all features table download controller
   output$download.all.features <- downloadHandler(
     filename = function() {
@@ -283,7 +299,8 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     },
     content = function(handle) {
       writeLines(session$features, handle)
-    }
+    },
+    contentType = "text/csv"
   )
   
   # used features table download controller
@@ -293,17 +310,19 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     },
     content = function(handle) {
       writeLines(session$features.used, handle)
-    }
+    },
+    contentType = "text/csv"
   )
   
   # frequencies table download controller
   output$download.frequencies <- downloadHandler(
     filename = function() {
-      paste(input$db.database, input$db.collection, "frequencies", "txt", sep = ".")
+      paste(input$db.database, input$db.collection, "frequencies", "csv", sep = ".")
     },
     content = function(handle) {
-      write.csv(x = session$frequencies, file = handle, sep = ";")
-    }
+      write.csv(x = session$frequencies, file = handle)
+    },
+    contentType = "text/csv"
   )
   
   # distances table download controller
@@ -312,25 +331,22 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
       paste(input$db.database, input$db.collection, "distances", "txt", sep = ".")
     },
     content = function(handle) {
-      write.csv(x = session$distances, file = handle, sep = ";")
-    }
+      write.csv(x = session$distances, file = handle)
+    },
+    contentType = "text/csv"
   )
-  
-  # distances table download controller
-  output$download.plot <- downloadHandler(
+
+  # result plot in SVG
+  output$download.plot.svg <- downloadHandler(
     filename = function() {
-      paste(
-        input$corpus.name,
-        input$output.plot.format.choices, 
-        sep = "."
-      )
+      paste(input$corpus.name, ".svg", sep = "")
     },
     content = function(handle) {
       file.copy(
         from = paste(
+          'results/',
           custom.graph.file.prefix,
-          "_001.",
-          input$output.plot.format.choices,
+          "_001.svg",
           sep = ""
         ),
         to = handle,
@@ -340,31 +356,56 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
         overwrite = FALSE
       )
     },
-    contentType = switch (
-      EXPR = input$output.plot.format.choices,
-      "png" = "image/png",
-      "svg" = "image/svg+xml",
-      "jpg" = "image/jpeg",
-      "pdf" = "application/pdf",
-      "application/octet-stream"
-    )
+    contentType = "image/svg"
   )
-  
-  
-  # plot file format selection controller
-  observe({
-    updateSelectInput(
-      shiny.session, 
-      "output.plot.format.choices", 
-      choices = c(
-        "PDF" = "pdf",
-        "JPG" = "jpg",
-        "SVG" = "svg",
-        "PNG" = "png"
+
+  # result plot in PNG
+  output$download.plot.png <- downloadHandler(
+    filename = function() {
+      paste(input$corpus.name, ".png", sep = "")
+    },
+    content = function(handle) {
+      file.copy(
+        from = paste(
+          'results/',
+          custom.graph.file.prefix,
+          "_001.png",
+          sep = ""
+        ),
+        to = handle,
+        copy.date = FALSE,
+        copy.mode = FALSE,
+        recursive = FALSE,
+        overwrite = FALSE
       )
-    )
-  })
-  
+    },
+    contentType = "image/png"
+  )
+
+  # result plot in PDF
+  output$download.plot.pdf <- downloadHandler(
+    filename = function() {
+      paste(input$corpus.name, ".pdf", sep = "")
+    },
+    content = function(handle) {
+      file.copy(
+        from = paste(
+          'results/',
+          custom.graph.file.prefix,
+          "_001.pdf",
+          sep = ""
+        ),
+        to = handle,
+        copy.date = FALSE,
+        copy.mode = FALSE,
+        recursive = FALSE,
+        overwrite = FALSE
+      )
+    },
+    contentType = "application/pdf"
+  )
+
+# Ez valójában nem működik a future() belsejéből, csak a sink() végén kap valamit
   observeEvent(poll.stylo.output(), {
     entry <- poll.stylo.output()
     if (entry != "") {
@@ -389,10 +430,11 @@ function (input, output, shiny.session, db.service, log.service, stylo.params.se
     # This function returns the content of the log entry
     valueFunc = function() {
       if (length(stylo.output) > 0) {
-        rev(stylo.output)
+        stylo.output
       } else {
         ""
       }
     }
   )
+
 }

@@ -1,45 +1,45 @@
 function(db.service, input){
   
-  saveVector <- c(
-    input$wizardInputSelect,
-    input$wizardLanguageSelect,
-    input$wizardUtf8Checkbox,
+  saveList <- list(
+    filetype = input$wizardInputSelect,
+    language = input$wizardLanguageSelect,
+    encoding = input$wizardUtf8Checkbox,
     
-    input$wizardFeaturesSelect,
-    input$wizardNgramInput,
-    input$wizardCaseCheckbox,
+    features = input$wizardFeaturesSelect,
+    NgramInput = input$wizardNgramInput,
+    CaseCheckbox = input$wizardCaseCheckbox,
     
-    input$wizardMfwMinimumInput,
-    input$wizardMfwMaximumInput,
-    input$wizardMfwIncrementInput,
-    input$wizardMfwFreqRankInput,
+    MfwMinimumInput = input$wizardMfwMinimumInput,
+    MfwMaximumInput = input$wizardMfwMaximumInput,
+    MfwIncrementInput = input$wizardMfwIncrementInput,
+    MfwFreqRankInput = input$wizardMfwFreqRankInput,
     
-    input$wizardCullingMinimumInput,
-    input$wizardCullingMaximumInput,
-    input$wizardCullingIncrementInput,
-    input$wizardCullingListCutoffInput,
-    input$wizardCullingPronounCheckbox,
+    CullingMinimumInput = input$wizardCullingMinimumInput,
+    CullingMaximumInput = input$wizardCullingMaximumInput,
+    CullingIncrementInput = input$wizardCullingIncrementInput,
+    CullingListCutoffInput = input$wizardCullingListCutoffInput,
+    CullingPronoun = input$wizardCullingPronounCheckbox,
     
-    input$wizardStatisticsSelect,
-    input$wizardStatisticsConsensusInput,
-    input$wizardScatterplotSelect,
-    input$wizardScatterplotMarginInput,
-    input$wizardScatterplotOffsetInput,
-    input$wizardPcaFlavourSelect,
-    input$wizardClusteringHorizontalCheckbox,
-    input$wizardDistancesSelect,
+    Statistics = input$wizardStatisticsSelect,
+    StatisticsConsensus = input$wizardStatisticsConsensusInput,
+    Scatterplot = input$wizardScatterplotSelect,
+    ScatterplotMargin = input$wizardScatterplotMarginInput,
+    ScatterplotOffset = input$wizardScatterplotOffsetInput,
+    PcaFlavour = input$wizardPcaFlavourSelect,
+    ClusteringHorizontal = input$wizardClusteringHorizontalCheckbox,
+    Distances = input$wizardDistancesSelect,
     
-    input$wizardSamplingSelect,
-    input$wizardSamplingInput,
+    SamplingMethod = input$wizardSamplingSelect,
+    SamplingNumber = input$wizardSamplingInput,
     
-    input$wizardOutputPlotHeightInput,
-    input$wizardOutputPlotWidthInput,
-    input$wizardOutputPlotFontInput,
-    input$wizardOutputPlotLineInput,
-    input$wizardOutputPlotColourChoices,
-    input$wizardOutputPlotDefaultCheckbox,
-    input$wizardOutputPlotTitlesCheckbox
+    OutputPlotHeight = input$wizardOutputPlotHeightInput,
+    OutputPlotWidth = input$wizardOutputPlotWidthInput,
+    OutputPlotFont = input$wizardOutputPlotFontInput,
+    OutputPlotLine = input$wizardOutputPlotLineInput,
+    OutputPlotColour = input$wizardOutputPlotColourChoices,
+    OutputPlotDefault = input$wizardOutputPlotDefaultCheckbox,
+    OutputPlotTitles = input$wizardOutputPlotTitlesCheckbox
   )
   
-  isolate(db.service$upload.save(saveVector, "wizard"))
+  isolate(db.service$upload.save(saveList, "wizard"))
 }

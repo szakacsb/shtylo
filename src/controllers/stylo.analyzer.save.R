@@ -1,47 +1,46 @@
 function(db.service, input){
   
-  saveVector <- c(
-    input$analyzerInputSelect,
-    input$analyzerLanguageSelect,
-    input$analyzerUtf8Checkbox,
+  saveList <- list(
+    filetype = input$analyzerInputSelect,
+    language = input$analyzerLanguageSelect,
+    encoding = input$analyzerUtf8Checkbox,
     
-    input$analyzerFeaturesSelect,
-    input$analyzerNgramInput,
-    input$analyzerCaseCheckbox,
+    features = input$analyzerFeaturesSelect,
+    NgramInput = input$analyzerNgramInput,
+    CaseCheckbox = input$analyzerCaseCheckbox,
     
-    input$analyzerMfwMinimumInput,
-    input$analyzerMfwMaximumInput,
-    input$analyzerMfwIncrementInput,
-    input$analyzerMfwFreqRankInput,
+    MfwMinimumInput = input$analyzerMfwMinimumInput,
+    MfwMaximumInput = input$analyzerMfwMaximumInput,
+    MfwIncrementInput = input$analyzerMfwIncrementInput,
+    MfwFreqRankInput = input$analyzerMfwFreqRankInput,
     
-    input$analyzerCullingMinimumInput,
-    input$analyzerCullingMaximumInput,
-    input$analyzerCullingIncrementInput,
-    input$analyzerCullingListCutoffInput,
-    input$analyzerCullingPronounCheckbox,
+    CullingMinimumInput = input$analyzerCullingMinimumInput,
+    CullingMaximumInput = input$analyzerCullingMaximumInput,
+    CullingIncrementInput = input$analyzerCullingIncrementInput,
+    CullingListCutoffInput = input$analyzerCullingListCutoffInput,
+    CullingPronoun = input$analyzerCullingPronounCheckbox,
     
-    input$analyzerStatisticsSelect,
-    input$analyzerStatisticsConsensusInput,
-    input$analyzerScatterplotSelect,
-    input$analyzerScatterplotMarginInput,
-    input$analyzerScatterplotOffsetInput,
-    input$analyzerPcaFlavourSelect,
-    input$analyzerClusteringHorizontalCheckbox,
-    input$analyzerDistancesSelect,
+    Statistics = input$analyzerStatisticsSelect,
+    StatisticsConsensus = input$analyzerStatisticsConsensusInput,
+    Scatterplot = input$analyzerScatterplotSelect,
+    ScatterplotMargin = input$analyzerScatterplotMarginInput,
+    ScatterplotOffset = input$analyzerScatterplotOffsetInput,
+    PcaFlavour = input$analyzerPcaFlavourSelect,
+    ClusteringHorizontal = input$analyzerClusteringHorizontalCheckbox,
+    Distances = input$analyzerDistancesSelect,
     
-    input$analyzerSamplingSelect,
-    input$analyzerSamplingInput,
+    SamplingMethod = input$analyzerSamplingSelect,
+    SamplingNumber = input$analyzerSamplingInput,
     
-    input$analyzerOutputPlotHeightInput,
-    input$analyzerOutputPlotWidthInput,
-    input$analyzerOutputPlotFontInput,
-    input$analyzerOutputPlotLineInput,
-    input$analyzerOutputPlotColourChoices,
-    input$analyzerOutputPlotDefaultCheckbox,
-    input$analyzerOutputPlotTitlesCheckbox
+    OutputPlotHeight = input$analyzerOutputPlotHeightInput,
+    OutputPlotWidth = input$analyzerOutputPlotWidthInput,
+    OutputPlotFont = input$analyzerOutputPlotFontInput,
+    OutputPlotLine = input$analyzerOutputPlotLineInput,
+    OutputPlotColour = input$analyzerOutputPlotColourChoices,
+    OutputPlotDefault = input$analyzerOutputPlotDefaultCheckbox,
+    OutputPlotTitles = input$analyzerOutputPlotTitlesCheckbox
   )
-  
 
-  isolate(db.service$upload.save(saveVector, "analyzer"))
+  isolate(db.service$upload.save(saveList, "analyzer"))
   
 }

@@ -68,8 +68,19 @@ function (input, output, session, db.service, log.service, saveSettings, loadSet
     eventExpr = input$stylo.load.text, 
     handlerExpr = {
       if (db.service$is.connected()) {
-        write_file(serialize(fromJSON(input$stylo.load.textbox), NULL), "stylo.conf")
-        loadSettings(db.service, session, "stylo")
+        tryCatch({
+            read_yaml(text = input$stylo.load.textbox)
+            write_file(input$stylo.load.textbox, "stylo.conf")
+            loadSettings(db.service, session, "stylo")
+	  },
+	  error = function(ex) {
+            showModal(modalDialog(
+              title = "Error",
+              "Invalid configuration."
+            ))
+	    return()
+	  }
+        )
       } else {
         showModal(modalDialog(
           title = "Error",
@@ -86,12 +97,10 @@ function (input, output, session, db.service, log.service, saveSettings, loadSet
     handlerExpr = {
       if (db.service$is.connected()) {
         saveSettings(db.service, input)
-        y <- read_file_raw("stylo.conf")
-        conffile <- unserialize(connection = y)
         updateTextAreaInput(
           session,
           "stylo.load.textbox",
-          value = toJSON(conffile)
+          value = read_file("stylo.conf")
         )
       } else {
         showModal(modalDialog(

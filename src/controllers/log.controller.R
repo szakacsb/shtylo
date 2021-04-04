@@ -11,15 +11,15 @@ function (input, output, session) {
   )
   
   log <- function (msg, where) {
-    entry <- paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg, sep = " ")
+    entry <- utf8_encode(paste(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), msg, sep = " "), display=TRUE)
     if (where == "corpus") {
-      console$corpus.log <- c(entry, console$corpus.log)
+      console$corpus.log <- c(console$corpus.log, entry)
     } else if (where == "stylo"){
-      console$stylo.log <- c(entry,console$stylo.log)
+      console$stylo.log <- c(console$stylo.log, entry)
     } else if (where == "wizard"){
-      console$wizard.log <- c(entry,console$wizard.log)
+      console$wizard.log <- c(console$wizard.log, entry)
     } else if (where == "analyzer"){
-      console$analyzer.log <- c(entry,console$analyzer.log)
+      console$analyzer.log <- c(console$analyzer.log, entry)
     }
   }
   

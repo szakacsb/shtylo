@@ -365,10 +365,12 @@ sidebarPanel(
         style = style,
         actionButton(
           "stylo.save",
+	  class = "btn-sm",
           label = "Save Settings"
         ),
         actionButton(
           "stylo.load",
+	  class = "btn-sm",
           label = "Load Settings"
         )
       ),
@@ -382,10 +384,12 @@ sidebarPanel(
         ),
         actionButton(
           "stylo.load.text",
+	  class = "btn-sm",
           label = "Load from text"
         ),
         actionButton(
           "stylo.export.text",
+	  class = "btn-sm",
           label = "Save to text"
         )
       ),
@@ -393,10 +397,12 @@ sidebarPanel(
         style = style,
         actionButton(
           "stylo.load.wizard",
+	  class = "btn-sm",
           label = "Load from Wizard"
         ),
         actionButton(
           "stylo.load.analyzer",
+	  class = "btn-sm",
           label = "Load from Analyzer"
         )
       )

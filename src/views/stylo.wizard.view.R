@@ -732,10 +732,12 @@ wizard.settings.panel <- tabPanel(
       wellPanel(
         actionButton(
           "wizard.save",
+          class = "btn-sm",
           label = "Save Settings"
         ),
         actionButton(
           "wizard.load",
+          class = "btn-sm",
           label = "Load Settings"
         )
       ),
@@ -748,20 +750,24 @@ wizard.settings.panel <- tabPanel(
         ),
         actionButton(
           "wizard.load.text",
+          class = "btn-sm",
           label = "Load from text"
         ),
         actionButton(
           "wizard.export.text",
+          class = "btn-sm",
           label = "Save to text"
         )
       ),
       wellPanel(
         actionButton(
           "wizard.load.stylo",
+          class = "btn-sm",
           label = "Load from Stylo"
         ),
         actionButton(
           "wizard.load.analyzer",
+          class = "btn-sm",
           label = "Load from Analyzer"
         )
       )
@@ -792,15 +798,18 @@ div(
         "WizardRun",
         label = "Run Wizard",
 	type = "action",
+	icon = icon(name = "magic", lib = "font-awesome"),
 	disabled = TRUE
       ),
       actionButton(
         "wizard.previous",
-        label = "Previous"
+        label = "",
+	icon = icon(name = "backward", lib = "font-awesome")
       ),
       actionButton(
         "wizard.next",
-        label = "Next"
+        label = "",
+	icon = icon(name = "forward", lib = "font-awesome")
       )
   ),
   fluidRow(

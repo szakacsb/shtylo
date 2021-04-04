@@ -1,45 +1,45 @@
 function(db.service, input){
   
-  saveVector <- c(
-    input$input.select,
-    input$language.select,
-    input$utf8.checkbox,
+  saveList <- list(
+    filetype = input$input.select,
+    language = input$language.select,
+    encoding = input$utf8.checkbox,
     
-    input$features.select,
-    input$ngram.input,
-    input$case.checkbox,
+    features = input$features.select,
+    NgramInput = input$ngram.input,
+    CaseCheckbox = input$case.checkbox,
     
-    input$mfw.minimum.input,
-    input$mfw.maximum.input,
-    input$mfw.increment.input,
-    input$mfw.freq.rank.input,
+    MfwMinimumInput = input$mfw.minimum.input,
+    MfwMaximumInput = input$mfw.maximum.input,
+    MfwIncrementInput = input$mfw.increment.input,
+    MfwFreqRankInput = input$mfw.freq.rank.input,
     
-    input$culling.minimum.input,
-    input$culling.maximum.input,
-    input$culling.increment.input,
-    input$culling.list.cutoff.input,
-    input$culling.pronoun.checkbox,
+    CullingMinimumInput = input$culling.minimum.input,
+    CullingMaximumInput = input$culling.maximum.input,
+    CullingIncrementInput = input$culling.increment.input,
+    CullingListCutoffInput = input$culling.list.cutoff.input,
+    CullingPronoun = input$culling.pronoun.checkbox,
     
-    input$statistics.select,
-    input$statistics.consensus.input,
-    input$scatterplot.select,
-    input$scatterplot.margin.input,
-    input$scatterplot.offset.input,
-    input$pca.flavour.select,
-    input$clustering.horizontal.checkbox,
-    input$distances.select,
+    Statistics = input$statistics.select,
+    StatisticsConsensus = input$statistics.consensus.input,
+    Scatterplot = input$scatterplot.select,
+    ScatterplotMargin = input$scatterplot.margin.input,
+    ScatterplotOffset = input$scatterplot.offset.input,
+    PcaFlavour = input$pca.flavour.select,
+    ClusteringHorizontal = input$clustering.horizontal.checkbox,
+    Distances = input$distances.select,
     
-    input$sampling.select,
-    input$sampling.input,
+    SamplingMethod = input$sampling.select,
+    SamplingNumber = input$sampling.input,
     
-    input$output.plot.height.input,
-    input$output.plot.width.input,
-    input$output.plot.font.input,
-    input$output.plot.line.input,
-    input$output.plot.colour.choices,
-    input$output.plot.default.checkbox,
-    input$output.plot.titles.checkbox
+    OutputPlotHeight = input$output.plot.height.input,
+    OutputPlotWidth = input$output.plot.width.input,
+    OutputPlotFont = input$output.plot.font.input,
+    OutputPlotLine = input$output.plot.line.input,
+    OutputPlotColour = input$output.plot.colour.choices,
+    OutputPlotDefault = input$output.plot.default.checkbox,
+    OutputPlotTitles = input$output.plot.titles.checkbox
   )
   
-  isolate(db.service$upload.save(saveVector, "stylo"))
+  isolate(db.service$upload.save(saveList, "stylo"))
 }

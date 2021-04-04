@@ -5,7 +5,7 @@ mainPanel(
   tags$head(
     tags$style(
       type='text/css', 
-      '#analyzerConsole {overflow-y:scroll; min-height: 350px; max-height: 350px;'
+      '#analyzerConsole {overflow-y:scroll; min-height: 350px; max-height: 350px; display: flex; flex-direction: column-reverse;}'
     )
   ),
   div(
